@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="len">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Кино и ужин">
+<meta name="theme-color" content="#3a0e18">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Кино и ужин</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--vel:#3a0e18;--vel2:#2b0a12;--ink:#f6e7c8;--gold:#e8b04a;--gold2:#ffd27a;--board:#151112;--paper:#f3e2c2;--dark:#2b0b12;--mute:#c9a77c;--line:#8a5a3a;--soft:#d9c3a0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--vel);color:var(--ink);font-family:'PT Serif',Georgia,serif}
+body{min-height:100vh;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 28px);background-color:var(--vel);background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.2) 0,rgba(0,0,0,0) 9px,rgba(255,255,255,.035) 14px,rgba(0,0,0,.2) 22px);background-attachment:fixed}
+.wrap{max-width:470px;margin:0 auto;position:relative;z-index:1}
+.osw{font-family:Oswald,'Arial Narrow',sans-serif}
+button{font-family:inherit}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:8px}
+.brand{font:600 15px Oswald,sans-serif;letter-spacing:.22em;color:var(--gold)}
+.icon-btn{height:40px;min-width:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:500 12px Oswald,sans-serif;letter-spacing:.14em;cursor:pointer;display:flex;align-items:center;gap:6px}
+/* вывеска */
+.marquee{position:relative;border-radius:14px;background:#1c0a0e;padding:22px 18px 20px;box-shadow:0 0 0 3px var(--gold),0 0 44px rgba(232,176,74,.25)}
+.bulbs{position:absolute;pointer-events:none;background-image:radial-gradient(circle,#ffe1a0 2.5px,rgba(255,225,160,.25) 3.5px,transparent 4.5px)}
+.bulbs.x{left:10px;right:10px;height:8px;background-size:16px 8px;background-repeat:repeat-x}
+.bulbs.y{top:10px;bottom:10px;width:8px;background-size:8px 16px;background-repeat:repeat-y}
+.bulbs.chase{animation:chase 1.4s steps(1) infinite;opacity:.0}
+.bulbs.x.chase{background-position:8px 0}.bulbs.y.chase{background-position:0 8px}
+@keyframes chase{50%{opacity:1}}
+.mq-k{margin:2px 0;text-align:center;font:500 12px Oswald,sans-serif;letter-spacing:.32em;color:var(--gold)}
+.mq-t{margin:0;text-align:center;font:700 42px/1 Oswald,sans-serif;letter-spacing:.03em;color:#fff3da;text-shadow:0 0 18px rgba(255,210,122,.45)}
+.mq-s{margin:8px 0 0;text-align:center;font-style:italic;font-size:14px;color:var(--soft)}
+.label{margin:22px 0 10px;font:500 13px Oswald,sans-serif;letter-spacing:.22em;color:var(--gold)}
+/* доска с буквами */
+.board{border-radius:12px;padding:12px 14px;background-color:var(--board);background-image:repeating-linear-gradient(180deg,#151112 0,#151112 9px,#0c0a0b 10px);box-shadow:inset 0 0 0 6px #2a1a14,inset 0 0 0 7px #5a3b26}
+.bgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:10px;padding:6px 4px}
+.lb{display:flex;align-items:center;gap:10px;min-height:46px;background:none;border:0;padding:0;color:#e9e2d6;font:500 19px Oswald,sans-serif;letter-spacing:.06em;cursor:pointer;text-align:left}
+.lb i{font-style:normal;font-size:12px;color:#8f857a;width:18px}
+.lb.on{color:var(--gold2);font-weight:600;text-shadow:0 0 12px rgba(255,210,122,.35)}
+.lb.on i{color:var(--gold)}
+/* билетики-настройки */
+.stubs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stub{border:1.5px dashed var(--line);border-radius:10px;padding:10px 12px}
+.stub .k{font:500 11px Oswald,sans-serif;letter-spacing:.18em;color:var(--mute)}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.opt{border:1px solid #6b4430;background:transparent;color:var(--ink);border-radius:8px;padding:0 10px;min-height:36px;font:700 14px 'PT Serif',serif;cursor:pointer}
+.opt.on{background:var(--gold);color:var(--dark);border-color:var(--gold)}
+.wxrow{display:flex;flex-wrap:wrap;gap:6px}
+.btn{display:block;width:100%;border:0;border-radius:12px;height:58px;font:700 18px Oswald,sans-serif;letter-spacing:.16em;cursor:pointer;margin-top:14px;text-align:center}
+.btn.main{background:var(--gold);color:var(--dark);box-shadow:0 0 0 4px var(--vel),0 0 0 5px var(--gold)}
+.btn.main:disabled{opacity:.35}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);height:50px;font-size:15px}
+.row{display:flex;gap:8px;margin-top:12px}
+.row button{flex:1;height:44px;border-radius:10px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:500 14px Oswald,sans-serif;letter-spacing:.12em;cursor:pointer}
+/* афиша */
+.poster{margin:0 10px;border-radius:6px;overflow:hidden;background:var(--paper);color:var(--dark)}
+.poster svg{display:block;width:100%;height:190px}
+.poster .pt{padding:12px 14px 14px;text-align:center}
+.poster .pk{margin:0;font:500 11px Oswald,sans-serif;letter-spacing:.28em;color:#8a3a22}
+.poster h2{margin:4px 0;font:700 40px/1 Oswald,sans-serif;letter-spacing:.03em;text-transform:uppercase}
+.poster .po{margin:0 0 6px;font-style:italic;font-size:12.5px;color:#7a4a3a}
+.poster .pd{margin:0;font-style:italic;font-size:14px;line-height:1.45;color:#4b2a22}
+.poster .pm{margin:8px 0 0;font:500 12px Oswald,sans-serif;letter-spacing:.12em;color:#8a3a22}
+/* буфет */
+.buf-t{margin:4px 0 6px;text-align:center;font:500 13px Oswald,sans-serif;letter-spacing:.34em;color:var(--gold)}
+.ctxn{text-align:center;font-style:italic;font-size:12.5px;color:#b9a58c;margin-bottom:6px}
+.course{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid #2a2224}
+.course:last-child{border-bottom:0}
+.course .ct{flex:1;min-width:0}
+.course .k{font:500 10.5px Oswald,sans-serif;letter-spacing:.2em;color:#8f857a}
+.course .n{font:500 19px/1.15 Oswald,sans-serif;letter-spacing:.05em;color:#f4efe6;text-transform:uppercase}
+.course .m{font:500 12px Oswald,sans-serif;letter-spacing:.1em;color:var(--mute);margin-top:2px}
+.course .w{font-style:italic;font-size:12.5px;color:#b9a58c;margin-top:3px;line-height:1.35}
+.re{width:40px;height:40px;flex:none;border-radius:10px;border:1px solid #4a3a30;background:transparent;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* программка (вкладки) */
+.prog{margin-top:14px;background:var(--paper);color:var(--dark);border-radius:10px;overflow:hidden}
+.tabs{display:flex;border-bottom:1.5px dashed #c9a87c}
+.tabs button{flex:1;background:none;border:0;padding:12px 4px;font:500 13px Oswald,sans-serif;letter-spacing:.14em;color:#8a6a55;cursor:pointer;min-height:44px}
+.tabs button.on{color:var(--dark);background:#ead4ad}
+.pane{padding:14px 16px 16px}
+.how p{margin:0 0 10px;font-size:14.5px;line-height:1.55}
+.how b{font-family:Oswald,sans-serif;font-weight:600;letter-spacing:.05em;color:#8a3a22;text-transform:uppercase;font-size:14px}
+.shop-group{margin-bottom:12px}
+.shop-group h4{margin:0 0 4px;font:600 12px Oswald,sans-serif;letter-spacing:.16em;color:#8a3a22;text-transform:uppercase}
+.shop-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dotted #c9a87c;font-size:15px;cursor:pointer}
+.shop-item .box{width:22px;height:22px;border-radius:5px;border:2px solid #8a6a55;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--paper)}
+.shop-item.done .box{background:#8a3a22;border-color:#8a3a22}
+.shop-item.done .t{text-decoration:line-through;color:#9a8270}
+.shop-item .q{margin-left:auto;color:#7a5a48;font-size:13px;white-space:nowrap}
+.pbtn{display:block;width:100%;margin-top:8px;height:46px;border-radius:10px;border:1.5px solid #8a3a22;background:transparent;color:#8a3a22;font:500 14px Oswald,sans-serif;letter-spacing:.14em;cursor:pointer}
+.order-link{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:#ead4ad;text-decoration:none;color:var(--dark);margin-bottom:8px}
+.order-link b{display:block;font:600 14px Oswald,sans-serif;letter-spacing:.06em}
+.order-link small{color:#7a5a48;font-size:12px}
+.order-link .arr{margin-left:auto;color:#8a3a22;font-weight:700}
+.osub{font:600 11px Oswald,sans-serif;letter-spacing:.18em;color:#8a3a22;margin:4px 0 8px}
+.note{font-size:12px;color:#7a5a48;line-height:1.45;margin-top:8px;font-style:italic}
+.empty{color:#8a6a55;text-align:center;padding:20px 10px;font-style:italic}
+/* архив */
+.ticket{display:flex;background:var(--paper);color:var(--dark);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.ticket .tb{flex:1;padding:12px 14px}
+.ticket .tn{font:600 18px Oswald,sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.ticket .ts{font-size:13px;color:#6b4a3a;margin-top:3px;font-style:italic}
+.ticket .tside{width:70px;border-left:2px dashed #c9a87c;background:#ead4ad;display:flex;align-items:center;justify-content:center;text-align:center;font:500 11px Oswald,sans-serif;letter-spacing:.12em;color:#8a3a22;padding:6px}
+.back{background:none;border:0;color:var(--gold);font:500 13px Oswald,sans-serif;letter-spacing:.16em;padding:0;min-height:44px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--dark);padding:12px 18px;border-radius:10px;font:600 14px Oswald,sans-serif;letter-spacing:.08em;opacity:0;transition:.25s;pointer-events:none;z-index:9;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.fade{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.drop{position:absolute;top:-12%;width:1.5px;height:64px;background:linear-gradient(transparent,rgba(255,225,190,.45));animation:fall linear infinite}
+@keyframes fall{from{transform:translate(0,0) rotate(12deg)}to{transform:translate(-110px,125vh) rotate(12deg)}}
+.flake{position:absolute;top:-6%;border-radius:50%;background:rgba(255,245,230,.9);animation:snow linear infinite}
+@keyframes snow{0%{transform:translate(0,0)}50%{transform:translate(28px,55vh)}100%{transform:translate(-10px,112vh)}}
+.sunglow{position:absolute;right:-140px;top:-160px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,120,.22),transparent 65%);animation:pulse 7s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.12);opacity:.75}}
+.cloud{position:absolute;height:130px;border-radius:50%;background:rgba(255,220,200,.08);filter:blur(34px);animation:drift linear infinite}
+@keyframes drift{from{transform:translateX(-110%)}to{transform:translateX(150vw)}}
+.fogband{position:absolute;left:-50%;width:200%;height:200px;background:linear-gradient(transparent,rgba(255,230,210,.1),transparent);filter:blur(12px);animation:fogm ease-in-out infinite alternate}
+@keyframes fogm{from{transform:translateX(-8%)}to{transform:translateX(8%)}}
+.star{display:none}
+@media (prefers-reduced-motion:reduce){#fx *,.bulbs.chase{animation:none!important}}
+
+.mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mp{border:0;padding:5px;border-radius:7px;background:transparent;cursor:pointer;opacity:.72;transition:transform .2s,opacity .2s,box-shadow .2s}
+.mp .pc{display:block;border-radius:3px;overflow:hidden}
+.mp svg{display:block;width:100%;height:auto;aspect-ratio:100/92}
+.mp .pl{display:block;padding:6px 2px 7px;text-align:center;font:600 13px Oswald,sans-serif;letter-spacing:.05em}
+.mp.on{opacity:1;background-color:#1c0a0e;background-image:radial-gradient(circle,#ffe1a0 1.6px,transparent 2.4px);background-size:9px 9px;box-shadow:0 0 0 2px var(--gold),0 0 22px rgba(232,176,74,.45);transform:translateY(-2px)}
+.mp.on .pl{font-weight:700}
+.mp:active{transform:scale(.97)}
+.hk{margin:0;font:500 12px Oswald,sans-serif;letter-spacing:.32em;color:var(--gold)}
+.hh{margin:2px 0 0;font:700 34px/1.05 Oswald,sans-serif;letter-spacing:.03em;color:#fff3da}
+.hs{margin:4px 0 16px;font-style:italic;font-size:14px;color:var(--soft)}
+.sur{display:block;width:100%;height:46px;margin-top:14px;border-radius:10px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:500 14px Oswald,sans-serif;letter-spacing:.14em;cursor:pointer}
+
+#curtain{position:fixed;inset:0;z-index:20;display:none;overflow:hidden}
+#curtain.show{display:block}
+#curtain .cdim{position:absolute;inset:0;background:#070304;opacity:0;transition:opacity .45s ease}
+#curtain.dark .cdim{opacity:.92}
+#curtain .cl,#curtain .cr{position:absolute;top:0;bottom:0;width:52%;transition:transform .75s cubic-bezier(.65,0,.25,1);background-color:#6a1222;background-image:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,0) 30%,rgba(0,0,0,.35)),repeating-linear-gradient(90deg,#4a0a15 0,#7d1828 12px,#9a2234 18px,#6a1222 26px,#4a0a15 36px);box-shadow:0 0 40px rgba(0,0,0,.6)}
+#curtain .cl{left:0;transform:translateX(-102%)}
+#curtain .cr{right:0;transform:translateX(102%)}
+#curtain.closed .cl,#curtain.closed .cr{transform:none}
+#curtain.opening .cl{transform:translateX(-102%);transition-duration:1.1s}
+#curtain.opening .cr{transform:translateX(102%);transition-duration:1.1s}
+#curtain .cl:after,#curtain .cr:after{content:'';position:absolute;left:0;right:0;bottom:0;height:14px;background:repeating-linear-gradient(90deg,#e8b04a 0,#e8b04a 4px,#b07a24 4px,#b07a24 8px);opacity:.9}
+#curtain .val{position:absolute;left:0;right:0;top:0;height:64px;z-index:2;background-color:#5a0f1c;background-image:repeating-linear-gradient(90deg,#4a0a15 0,#7d1828 20px,#4a0a15 40px);border-bottom:6px solid #e8b04a;box-shadow:0 8px 20px rgba(0,0,0,.5);transform:translateY(-110%);transition:transform .5s ease}
+#curtain.dark .val{transform:none}
+#curtain .lead{position:absolute;left:50%;top:50%;width:190px;height:190px;margin:-95px 0 0 -95px;z-index:3;border-radius:50%;opacity:0;transform:scale(.85);transition:opacity .25s,transform .25s;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#f3e2c2 0 58%,transparent 59%),conic-gradient(from 0deg,rgba(43,11,18,.0) 0deg,rgba(43,11,18,.0) var(--sw,0deg),#f3e2c2 var(--sw,0deg));box-shadow:0 0 0 6px #e8b04a,0 0 0 9px #2b0b12,0 0 60px rgba(255,210,122,.4)}
+#curtain.count .lead{opacity:1;transform:none}
+#curtain .lead:before,#curtain .lead:after{content:'';position:absolute;background:#2b0b12;opacity:.5}
+#curtain .lead:before{left:50%;top:6px;bottom:6px;width:2px;margin-left:-1px}
+#curtain .lead:after{top:50%;left:6px;right:6px;height:2px;margin-top:-1px}
+#curtain .num{position:relative;z-index:1;font:700 96px/1 Oswald,sans-serif;color:#2b0b12}
+#curtain .cap{position:absolute;left:0;right:0;top:calc(50% + 120px);z-index:3;text-align:center;font:500 13px Oswald,sans-serif;letter-spacing:.34em;color:#ffd27a;opacity:0;transition:opacity .3s}
+#curtain.count .cap{opacity:1}
+#curtain .skip{position:absolute;right:16px;bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:4;background:rgba(0,0,0,.35);border:1px solid rgba(232,176,74,.5);color:#ffd27a;border-radius:10px;height:40px;padding:0 14px;font:500 12px Oswald,sans-serif;letter-spacing:.16em;cursor:pointer}
+
+.poster{position:relative}
+.marquee.rw,.marquee.rv{overflow:hidden}
+.marquee.rw .poster{animation:rwOut .48s cubic-bezier(.5,0,.9,.4) forwards}
+@keyframes rwOut{0%{transform:none;filter:none}20%{filter:brightness(1.7) contrast(1.2)}35%{filter:brightness(.7)}55%{filter:brightness(1.5) blur(1px)}100%{transform:translateY(-40%) scaleY(1.05);filter:brightness(.15) blur(4px);opacity:.15}}
+.marquee.rv .poster{animation:rvIn .6s cubic-bezier(.2,.7,.3,1)}
+@keyframes rvIn{0%{transform:translateY(40%);filter:brightness(1.9) blur(4px);opacity:.2}35%{filter:brightness(1.4) blur(1px);opacity:1}50%{filter:brightness(.75)}65%{filter:brightness(1.25)}80%{filter:brightness(.92)}100%{transform:none;filter:none;opacity:1}}
+.flick{position:absolute;inset:14px 24px;z-index:5;pointer-events:none;border-radius:6px;opacity:0;mix-blend-mode:screen;
+ background:repeating-linear-gradient(90deg,transparent 0 37px,rgba(255,240,210,.14) 38px 39px,transparent 40px 91px,rgba(255,240,210,.1) 92px 93px),radial-gradient(ellipse at 50% 50%,rgba(255,235,190,.35),transparent 70%)}
+.marquee.rw .flick,.marquee.rv .flick{animation:flk .09s steps(2) infinite,flkfade .6s ease forwards}
+@keyframes flk{0%{transform:translateX(0)}50%{transform:translateX(9px)}}
+@keyframes flkfade{0%{opacity:.9}100%{opacity:0}}
+.sprk{position:absolute;top:0;bottom:0;width:10px;z-index:6;pointer-events:none;opacity:0;background:repeating-linear-gradient(180deg,#0c0708 0 8px,#f3e2c2 8px 14px)}
+.sprk.l{left:16px}.sprk.r{right:16px}
+.marquee.rw .sprk,.marquee.rv .sprk{opacity:.85;animation:sprk .12s linear infinite}
+@keyframes sprk{to{background-position:0 14px}}
+
+.prog-strip{display:flex;gap:4px;margin:4px 0 18px;padding:6px 6px;background:#120c0c;border-radius:4px;background-image:radial-gradient(circle,#3a0e18 2px,transparent 2.5px),radial-gradient(circle,#3a0e18 2px,transparent 2.5px);background-size:10px 6px,10px 6px;background-repeat:repeat-x;background-position:2px 0,2px 100%}
+.prog-strip i{flex:1;height:14px;border-radius:2px;background:#3b2a22}
+.prog-strip i.on{background:var(--gold);box-shadow:0 0 8px rgba(255,210,122,.5)}
+.qcard{position:relative;border-radius:14px;background:#1c0a0e;padding:22px 18px 20px;box-shadow:0 0 0 3px var(--gold),0 0 44px rgba(232,176,74,.2)}
+.qn{font:500 12px Oswald,sans-serif;letter-spacing:.3em;color:var(--gold);margin:4px 0 6px;text-align:center}
+.qq{margin:0;text-align:center;font:700 28px/1.12 Oswald,sans-serif;letter-spacing:.02em;color:#fff3da}
+.qh{margin:8px 0 0;text-align:center;font-style:italic;font-size:13.5px;color:var(--soft)}
+.qopts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.qo{position:relative;display:flex;align-items:center;gap:12px;min-height:62px;padding:12px 16px 12px 18px;border:0;border-radius:8px;background:var(--paper);color:var(--dark);cursor:pointer;text-align:left;font:400 16px/1.3 'PT Serif',serif;transition:transform .15s}
+.qo:before,.qo:after{content:'';position:absolute;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--vel)}
+.qo:before{left:-7px}.qo:after{right:-7px}
+.qo b{font:700 13px Oswald,sans-serif;color:#8a3a22;letter-spacing:.1em;width:20px;flex:none}
+.qo:active{transform:scale(.98)}
+.qo.on{background:var(--gold);box-shadow:0 0 18px rgba(255,210,122,.4)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;justify-content:center}
+.qnote{font-size:11.5px;color:#a8927d;font-style:italic;text-align:center;margin-top:14px;line-height:1.45}
+.abon{position:relative;display:flex;background:var(--paper);color:var(--dark);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.abon .ab{flex:1;padding:14px 16px}
+.abon .ak{font:500 10.5px Oswald,sans-serif;letter-spacing:.24em;color:#8a3a22}
+.abon .an{font:700 22px/1.1 Oswald,sans-serif;letter-spacing:.03em;margin:4px 0 2px;text-transform:uppercase}
+.abon .af{font-style:italic;font-size:13px;color:#6b4a3a}
+.abon .side{width:62px;border-left:2px dashed #c9a87c;background:#ead4ad;display:flex;align-items:center;justify-content:center}
+.abon .side span{writing-mode:vertical-rl;transform:rotate(180deg);font:600 11px Oswald,sans-serif;letter-spacing:.2em;color:#8a3a22}
+.bars{margin-top:10px;display:flex;flex-direction:column;gap:7px}
+.bar{display:grid;grid-template-columns:118px 1fr;align-items:center;gap:8px;font:500 11.5px Oswald,sans-serif;letter-spacing:.08em;color:#6b4a3a}
+.bar i{display:block;height:8px;border-radius:4px;background:#e2cba4;overflow:hidden}
+.bar i b{display:block;height:100%;background:#8a3a22;border-radius:4px}
+.dietl{margin-top:8px;font-size:12.5px;color:#6b4a3a}
+
+button,a{touch-action:manipulation}
+html{-webkit-text-size-adjust:100%}
+.ihint{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);z-index:15;background:var(--paper);color:var(--dark);border-radius:12px;padding:12px 44px 12px 14px;font-size:13.5px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.ihint b{font-family:Oswald,sans-serif;letter-spacing:.06em}
+.ihint button{position:absolute;right:6px;top:6px;width:36px;height:36px;border:0;background:none;font-size:20px;color:#8a3a22;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="fx"></div>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+<div id="curtain" aria-hidden="true"><div class="cdim"></div><div class="cl"></div><div class="cr"></div><div class="val"></div><div class="lead"><span class="num">3</span></div><div class="cap">СЕАНС НАЧИНАЕТСЯ</div><button class="skip" onclick="skipCurtain()">ПРОПУСТИТЬ</button></div>
+<script>
+const MOODS={
+ cozy:{e:'🛋️',n:'Уютно',h:'плед, чай, ничего сложного'},
+ fun:{e:'😂',n:'Посмеяться',h:'выключить голову'},
+ romance:{e:'💞',n:'Романтика',h:'для двоих'},
+ thrill:{e:'😱',n:'Пощекотать нервы',h:'триллер, ужасы, загадка'},
+ action:{e:'💥',n:'Драйв',h:'экшен и адреналин'},
+ deep:{e:'🧠',n:'Подумать',h:'кино, о котором говорят потом'},
+ touching:{e:'🥹',n:'Растрогаться',h:'тепло и немного слёз'},
+ wonder:{e:'✨',n:'Волшебство',h:'фантастика, сказка, другие миры'},
+ nostalgia:{e:'📼',n:'Ностальгия',h:'старое доброе'}
+};
+
+const MOVIES=[
+{t:'Один дома',o:'Home Alone',y:1990,r:103,g:'комедия',e:'🏠',m:['fun','cozy','nostalgia'],k:1,c:['american','comfort'],d:'Восьмилетнего Кевина забыли дома на Рождество, а к дому уже присматриваются два незадачливых грабителя.',fav:'pizza',fn:'Как у Кевина — целая сырная пицца, и никто не отнимет.'},
+{t:'Рататуй',o:'Ratatouille',y:2007,r:111,g:'мультфильм',e:'🐀',m:['cozy','wonder','touching'],k:1,c:['french'],d:'Крыса с талантом повара и неуклюжий парень вместе пытаются покорить парижскую кухню.',fav:'ratatouille',fn:'Тот самый рататуй, который растопил сердце самого строгого критика.'},
+{t:'Шеф',o:'Chef',y:2014,r:114,g:'комедия',e:'👨‍🍳',m:['cozy','fun','touching'],k:0,c:['american','mexican'],d:'Шеф-повар уходит из ресторана после скандала и начинает всё заново с фудтраком и сыном.',fav:'cuban',fn:'Кубинский сэндвич — главный герой этого фильма наравне с шефом.',drf:'mojito',drn:'Мохито — Майами и Куба, по которым проезжает фудтрак шефа.'},
+{t:'Ешь, молись, люби',o:'Eat Pray Love',y:2010,r:133,g:'мелодрама',e:'🍝',m:['romance','cozy','deep'],k:0,c:['italian','indian'],d:'После развода героиня Джулии Робертс отправляется в год путешествий: Италия, Индия, Бали.',fav:'carbonara',fn:'Римская часть фильма — это почти реклама пасты. Сопротивляться бесполезно.'},
+{t:'Римские каникулы',o:'Roman Holiday',y:1953,r:118,g:'мелодрама',e:'🛵',m:['romance','nostalgia','cozy'],k:1,c:['italian'],d:'Принцесса сбегает от протокола и проводит день в Риме с журналистом, который знает, кто она.'},
+{t:'Назови меня своим именем',o:'Call Me by Your Name',y:2017,r:132,g:'драма',e:'🍑',m:['romance','deep'],k:0,c:['italian','light'],d:'Жаркое итальянское лето 1983 года и первая любовь, которую не забыть.'},
+{t:'Крёстный отец',o:'The Godfather',y:1972,r:175,g:'криминальная драма',e:'🌹',m:['deep','action'],k:0,c:['italian'],d:'История семьи Корлеоне и того, как младший сын, не хотевший семейного дела, становится его главой.',fav:'meatballs',fn:'Как Клеменца учил Майкла: паста с томатным соусом и фрикадельками.',drf:'chianti',drn:'Итальянское красное — за семью.'},
+{t:'Ирония судьбы, или С лёгким паром!',o:'',y:1975,r:184,g:'комедия',e:'❄️',m:['cozy','nostalgia','romance'],k:1,c:['russian','festive'],d:'Одна баня, один самолёт и одинаковые квартиры в разных городах — новогоднее чудо по-советски.',fav:'olivier',fn:'Без оливье эта история просто не начинается.',drf:'sparkling',drn:'Новогодняя история без шампанского не бывает.'},
+{t:'Москва слезам не верит',o:'',y:1979,r:150,g:'мелодрама',e:'🏙️',m:['touching','nostalgia','romance'],k:0,c:['russian'],d:'Три подруги приезжают покорять Москву, а двадцать лет спустя мы видим, что из этого вышло.'},
+{t:'Джентльмены удачи',o:'',y:1971,r:84,g:'комедия',e:'🎩',m:['fun','nostalgia'],k:1,c:['russian','comfort'],d:'Заведующий детсадом как две капли воды похож на преступника — и ему приходится играть его роль.'},
+{t:'Бриллиантовая рука',o:'',y:1968,r:100,g:'комедия',e:'💎',m:['fun','nostalgia'],k:1,c:['russian','festive'],d:'Скромный экономист Семён Семёнович случайно становится курьером контрабандистов.'},
+{t:'Иван Васильевич меняет профессию',o:'',y:1973,r:88,g:'комедия',e:'👑',m:['fun','nostalgia','wonder'],k:1,c:['russian','festive'],d:'Машина времени меняет местами управдома и Ивана Грозного. Хаос в обоих веках.'},
+{t:'Служебный роман',o:'',y:1977,r:159,g:'комедия',e:'📎',m:['romance','fun','nostalgia'],k:0,c:['russian'],d:'Робкий сотрудник статистического учреждения решает приударить за строгой начальницей ради карьеры.'},
+{t:'Любовь и голуби',o:'',y:1984,r:107,g:'комедия',e:'🕊️',m:['fun','touching','nostalgia'],k:0,c:['russian','comfort'],d:'Деревенский мужик едет на курорт и возвращается к семье совсем не тем, кем уезжал.'},
+{t:'Мимино',o:'',y:1977,r:97,g:'комедия',e:'🚁',m:['fun','touching','nostalgia'],k:1,c:['georgian'],d:'Грузинский вертолётчик мечтает о больших самолётах и попадает в Москву, а оттуда — в большой мир.',fav:'khinkali',fn:'Грузинское застолье, как будто Валико сам накрыл.',drf:'saperavi',drn:'Грузинское вино — и тосты, как у Валико.'},
+{t:'Кавказская пленница',o:'',y:1967,r:82,g:'комедия',e:'🏔️',m:['fun','nostalgia'],k:1,c:['georgian'],d:'Шурик едет собирать фольклор на Кавказ и оказывается втянут в похищение «невесты».',fav:'shashlik',fn:'Шашлык — как будто в горах у товарища Саахова.'},
+{t:'Не горюй!',o:'',y:1969,r:94,g:'комедия',e:'🍷',m:['fun','touching','deep'],k:0,c:['georgian'],d:'Молодой врач возвращается в родной городок, где жизнь, свадьбы и похороны идут под весёлую музыку.'},
+{t:'Брат',o:'',y:1997,r:99,g:'криминальная драма',e:'🎧',m:['action','deep','nostalgia'],k:0,c:['russian','snack'],d:'Демобилизованный Данила едет в Петербург к старшему брату и попадает в криминальный мир 90-х.'},
+{t:'Холоп',o:'',y:2019,r:109,g:'комедия',e:'🐴',m:['fun'],k:0,c:['russian'],d:'Избалованного мажора «отправляют» в XIX век крепостным — перевоспитание в декорациях.'},
+{t:'Движение вверх',o:'',y:2017,r:133,g:'спортивная драма',e:'🏀',m:['action','touching'],k:1,c:['russian','american'],d:'Сборная СССР по баскетболу и три секунды финала Олимпиады-1972 в Мюнхене.'},
+{t:'Унесённые призраками',o:'Sen to Chihiro',y:2001,r:125,g:'аниме',e:'🐉',m:['wonder','touching'],k:1,c:['japanese'],d:'Девочка Тихиро попадает в мир духов и устраивается работать в волшебную баню, чтобы спасти родителей.'},
+{t:'Мой сосед Тоторо',o:'Tonari no Totoro',y:1988,r:86,g:'аниме',e:'🌳',m:['cozy','wonder'],k:1,c:['japanese','light'],d:'Две сестры переезжают в деревню и знакомятся с большим пушистым лесным духом.'},
+{t:'Мечты Дзиро о суши',o:'Jiro Dreams of Sushi',y:2011,r:81,g:'документальный',e:'🍣',m:['deep','cozy'],k:1,c:['japanese'],d:'Портрет 85-летнего мастера суши из крошечного токийского ресторана, где каждый кусочек — совершенство.',fav:'sushi',fn:'После этого фильма суши не заказать физически невозможно.'},
+{t:'Трудности перевода',o:'Lost in Translation',y:2003,r:102,g:'драма',e:'🗼',m:['deep','romance'],k:0,c:['japanese'],d:'Стареющая кинозвезда и молодая жена фотографа встречаются в токийском отеле и не могут уснуть.'},
+{t:'Хатико: Самый верный друг',o:"Hachi: A Dog's Tale",y:2009,r:93,g:'драма',e:'🐕',m:['touching'],k:1,c:['japanese','comfort'],d:'Профессор находит щенка акиты, и между ними возникает дружба, которая сильнее времени.'},
+{t:'Паразиты',o:'Gisaengchung',y:2019,r:132,g:'триллер',e:'🪨',m:['thrill','deep'],k:0,c:['asian'],d:'Бедная семья хитростью устраивается работать к богатой. Поначалу смешно, потом — совсем нет.'},
+{t:'Поезд в Пусан',o:'Busanhaeng',y:2016,r:118,g:'ужасы',e:'🚆',m:['thrill','action'],k:0,c:['asian','snack'],d:'Скоростной поезд, зомби-эпидемия и отец, который пытается довезти дочь до безопасного города.'},
+{t:'Любовное настроение',o:'Fa yeung nin wa',y:2000,r:98,g:'мелодрама',e:'🏮',m:['romance','deep'],k:0,c:['asian'],d:'Гонконг 1960-х. Мужчина и женщина узнают, что их супруги им изменяют, и сближаются сами.'},
+{t:'Криминальное чтиво',o:'Pulp Fiction',y:1994,r:154,g:'криминал',e:'💼',m:['action','fun'],k:0,c:['american'],d:'Несколько переплетённых историй бандитов, боксёра и чемоданчика, который светится изнутри.',fav:'burger',fn:'«Роял с сыром» — бургер, о котором так увлечённо спорили Винсент и Джулс.',drf:'milkshake',drn:'Тот самый молочный коктейль за пять долларов, который заказала Миа.'},
+{t:'Безумный Макс: Дорога ярости',o:'Mad Max: Fury Road',y:2015,r:120,g:'экшен',e:'🔥',m:['action'],k:0,c:['american','snack'],d:'Одна бесконечная погоня по пустыне — и одна из лучших экшен-картин десятилетия.'},
+{t:'Джон Уик',o:'John Wick',y:2014,r:101,g:'экшен',e:'🔫',m:['action','thrill'],k:0,c:['snack','american'],d:'Не стоило трогать собаку бывшего наёмника. Совсем не стоило.'},
+{t:'Начало',o:'Inception',y:2010,r:148,g:'фантастика',e:'🌀',m:['deep','thrill','wonder'],k:0,c:['snack','japanese'],d:'Команда воров проникает в чужие сны, чтобы не украсть идею, а внедрить её.'},
+{t:'Интерстеллар',o:'Interstellar',y:2014,r:169,g:'фантастика',e:'🪐',m:['deep','wonder','touching'],k:1,c:['comfort','american'],d:'Земля умирает, и бывший пилот улетает сквозь червоточину искать людям новый дом.'},
+{t:'Матрица',o:'The Matrix',y:1999,r:136,g:'фантастика',e:'💊',m:['action','deep','nostalgia'],k:0,c:['snack','asian'],d:'Хакер Нео узнаёт, что мир вокруг — симуляция. Красная таблетка или синяя?'},
+{t:'Назад в будущее',o:'Back to the Future',y:1985,r:116,g:'приключения',e:'⏰',m:['fun','wonder','nostalgia'],k:1,c:['american'],d:'Марти на машине времени попадает в 1955 год и случайно мешает своим родителям познакомиться.'},
+{t:'Гарри Поттер и философский камень',o:"Harry Potter and the Philosopher's Stone",y:2001,r:152,g:'фэнтези',e:'⚡',m:['wonder','cozy','nostalgia'],k:1,c:['festive','comfort'],d:'Мальчик из чулана под лестницей узнаёт, что он волшебник, и едет в Хогвартс.',drf:'butterbeer',drn:'Сливочное пиво — любимый напиток юных волшебников.'},
+{t:'Властелин колец: Братство кольца',o:'The Lord of the Rings: The Fellowship of the Ring',y:2001,r:178,g:'фэнтези',e:'💍',m:['wonder','action'],k:1,c:['comfort','festive'],d:'Хоббит Фродо получает в наследство кольцо, которое надо уничтожить, пока оно не уничтожило мир.'},
+{t:'Достать ножи',o:'Knives Out',y:2019,r:130,g:'детектив',e:'🔪',m:['thrill','fun'],k:0,c:['american','snack'],d:'Знаменитый автор детективов умирает в свой день рождения. Подозревается вся семья.'},
+{t:'Остров проклятых',o:'Shutter Island',y:2010,r:138,g:'триллер',e:'🏝️',m:['thrill','deep'],k:0,c:['snack','american'],d:'Два маршала расследуют побег пациентки из клиники для душевнобольных на закрытом острове.'},
+{t:'Сияние',o:'The Shining',y:1980,r:144,g:'ужасы',e:'🪓',m:['thrill'],k:0,c:['comfort','snack'],d:'Писатель с семьёй на всю зиму остаётся смотрителем пустого горного отеля. Ошибка.'},
+{t:'Тихое место',o:'A Quiet Place',y:2018,r:90,g:'ужасы',e:'🤫',m:['thrill'],k:0,c:['snack'],d:'Существа охотятся на любой звук. Семья учится жить в полной тишине.',fav:'macncheese',fn:'Мягкая еда без хруста — чтобы не выдать себя в самый напряжённый момент 😉'},
+{t:'Прочь',o:'Get Out',y:2017,r:104,g:'ужасы',e:'☕',m:['thrill','deep'],k:0,c:['snack','american'],d:'Парень едет знакомиться с родителями девушки. Они подозрительно милые.'},
+{t:'Семь',o:'Se7en',y:1995,r:127,g:'триллер',e:'📦',m:['thrill','deep'],k:0,c:['snack','american'],d:'Два детектива выслеживают убийцу, который строит преступления вокруг семи смертных грехов.'},
+{t:'1+1',o:'Intouchables',y:2011,r:112,g:'драма',e:'🦽',m:['touching','fun'],k:0,c:['french'],d:'Парализованный аристократ нанимает в сиделки парня из пригорода — и это лучшее его решение.'},
+{t:'Зелёная книга',o:'Green Book',y:2018,r:130,g:'драма',e:'🚗',m:['touching','fun'],k:0,c:['american'],d:'Вышибала из Бронкса возит чернокожего пианиста по югу США в 1962 году.',fav:'friedchicken',fn:'Та самая жареная курица, которую Тони заставил попробовать доктора Ширли.'},
+{t:'Форрест Гамп',o:'Forrest Gump',y:1994,r:142,g:'драма',e:'🪶',m:['touching','nostalgia','fun'],k:1,c:['american','seafood'],d:'Простой парень из Алабамы проходит через всю историю Америки второй половины XX века.',fav:'shrimp',fn:'Бубба знал о креветках всё. Время проверить.'},
+{t:'Вверх',o:'Up',y:2009,r:96,g:'мультфильм',e:'🎈',m:['touching','wonder'],k:1,c:['comfort','american'],d:'Старик привязывает к дому тысячи шаров и улетает в Южную Америку. С ним случайно летит мальчик-скаут.'},
+{t:'Головоломка',o:'Inside Out',y:2015,r:95,g:'мультфильм',e:'🧩',m:['touching','fun'],k:1,c:['american','comfort'],d:'Радость, Печаль, Гнев, Страх и Брезгливость управляют головой девочки, которая переезжает в новый город.',fav:'pizza',fn:'Пицца — только без брокколи, как в Сан-Франциско у Райли.'},
+{t:'Тайна Коко',o:'Coco',y:2017,r:105,g:'мультфильм',e:'💀',m:['touching','wonder'],k:1,c:['mexican'],d:'Мальчик-музыкант в День мёртвых попадает в мир предков, чтобы узнать семейную тайну.',fav:'tacos',fn:'День мёртвых — лучший повод для мексиканского стола.',dfav:'churros',dn:'Чуррос — сладкий финал мексиканского вечера.'},
+{t:'Ла-Ла Ленд',o:'La La Land',y:2016,r:128,g:'мюзикл',e:'🎹',m:['romance','touching'],k:1,c:['american','light'],d:'Джазовый пианист и начинающая актриса влюбляются в Лос-Анджелесе, где у каждого своя мечта.'},
+{t:'Гордость и предубеждение',o:'Pride & Prejudice',y:2005,r:129,g:'мелодрама',e:'📜',m:['romance','cozy'],k:1,c:['comfort','light'],d:'Элизабет Беннет и мистер Дарси с первой встречи не выносят друг друга. Это ненадолго.'},
+{t:'Отпуск по обмену',o:'The Holiday',y:2006,r:136,g:'мелодрама',e:'🏡',m:['romance','cozy'],k:0,c:['comfort','festive'],d:'Две женщины, разочарованные в любви, меняются домами на Рождество: Лос-Анджелес на английскую деревню.'},
+{t:'Амели',o:"Le Fabuleux Destin d'Amélie Poulain",y:2001,r:122,g:'комедия',e:'🎠',m:['cozy','romance','wonder'],k:0,c:['french','dessert'],d:'Застенчивая официантка с Монмартра решает тайком делать окружающих счастливее.'},
+{t:'Полночь в Париже',o:'Midnight in Paris',y:2011,r:94,g:'комедия',e:'🗼',m:['romance','cozy','wonder'],k:0,c:['french'],d:'Каждую полночь писатель садится в старинное авто и попадает в Париж 1920-х.',fav:'cheese',fn:'Сыр, багет и вино — Париж двадцатых прямо на вашем столе.'},
+{t:'Джули и Джулия',o:'Julie & Julia',y:2009,r:123,g:'комедия',e:'🥘',m:['cozy','fun'],k:1,c:['french'],d:'Блогер решает за год приготовить все 524 рецепта из книги Джулии Чайлд. Параллельно — история самой Джулии.',fav:'bourguignon',fn:'Бёф бургиньон — блюдо, на котором Джули чуть не сдалась.'},
+{t:'Дьявол носит Prada',o:'The Devil Wears Prada',y:2006,r:109,g:'комедия',e:'👠',m:['fun'],k:0,c:['american','light'],d:'Выпускница-журналистка становится ассистенткой самой страшной начальницы в мире моды.'},
+{t:'Мальчишник в Вегасе',o:'The Hangover',y:2009,r:100,g:'комедия',e:'🐯',m:['fun'],k:0,c:['american','snack'],d:'Трое друзей просыпаются после мальчишника без жениха, без памяти, но с тигром в ванной.'},
+{t:'Большой Лебовски',o:'The Big Lebowski',y:1998,r:117,g:'комедия',e:'🎳',m:['fun'],k:0,c:['snack','american'],d:'Расслабленного Чувака путают с миллионером, и его жизнь превращается в абсурдный детектив.',drf:'whiterussian',drn:'Белый русский — единственный напиток, который признаёт Чувак.'},
+{t:'Отель «Гранд Будапешт»',o:'The Grand Budapest Hotel',y:2014,r:99,g:'комедия',e:'🏨',m:['fun','wonder'],k:0,c:['dessert','french'],d:'Легендарный консьерж и его юный помощник ввязываются в погоню за украденной картиной.',dfav:'brownie',dn:'Почти пирожные от Мендля — что-то сладкое и нежное к финалу.'},
+{t:'Мамма MIA!',o:'Mamma Mia!',y:2008,r:108,g:'мюзикл',e:'🎤',m:['fun','romance'],k:1,c:['mediterranean','light'],d:'Невеста на греческом острове тайно приглашает на свадьбу трёх мужчин — один из них её отец.',fav:'gyros',fn:'Греческий остров на экране — гирос и салат на столе.'},
+{t:'Шрек',o:'Shrek',y:2001,r:90,g:'мультфильм',e:'🧅',m:['fun','wonder'],k:1,c:['comfort'],d:'Огр спасает принцессу, чтобы вернуть себе болото. План идёт не по плану.'},
+{t:'В поисках Немо',o:'Finding Nemo',y:2003,r:100,g:'мультфильм',e:'🐠',m:['fun','touching'],k:1,c:['comfort','light'],d:'Отец-рыбка-клоун пересекает океан, чтобы найти пропавшего сына.'},
+{t:'Пираты Карибского моря: Проклятие «Чёрной жемчужины»',o:'Pirates of the Caribbean',y:2003,r:143,g:'приключения',e:'🏴‍☠️',m:['action','fun','wonder'],k:1,c:['seafood','mediterranean'],d:'Капитан Джек Воробей, проклятые пираты и кузнец, влюблённый в дочь губернатора.'},
+{t:'Индиана Джонс: В поисках утраченного ковчега',o:'Raiders of the Lost Ark',y:1981,r:115,g:'приключения',e:'🤠',m:['action','nostalgia'],k:1,c:['eastern','snack'],d:'Археолог с хлыстом опережает нацистов в погоне за библейским артефактом.'},
+{t:'Топ Ган: Мэверик',o:'Top Gun: Maverick',y:2022,r:130,g:'экшен',e:'✈️',m:['action','touching'],k:1,c:['american'],d:'Спустя тридцать лет Мэверик возвращается, чтобы подготовить молодых пилотов к почти невыполнимой миссии.'},
+{t:'Дюна',o:'Dune',y:2021,r:155,g:'фантастика',e:'🏜️',m:['wonder','deep','action'],k:0,c:['eastern'],d:'Наследник великого дома прибывает на пустынную планету — самую ценную и опасную во вселенной.',fav:'shawarma',fn:'Пустыня, специи, Восток — шаверма или фалафель здесь как родные.'},
+{t:'Аладдин',o:'Aladdin',y:2019,r:128,g:'сказка',e:'🪔',m:['wonder','fun','romance'],k:1,c:['eastern'],d:'Уличный воришка находит волшебную лампу с очень разговорчивым джинном.'},
+{t:'Пряности и страсти',o:'The Hundred-Foot Journey',y:2014,r:122,g:'драма',e:'🌶️',m:['cozy','touching'],k:1,c:['indian','french'],d:'Индийская семья открывает ресторан прямо напротив изысканного французского заведения.',fav:'tikka',fn:'Фильм-противостояние индийской и французской кухни. Мы выбираем специи.',drf:'lassi',drn:'Манго-ласси — освежает после специй.'},
+{t:'Миллионер из трущоб',o:'Slumdog Millionaire',y:2008,r:120,g:'драма',e:'🎰',m:['touching','thrill'],k:0,c:['indian'],d:'Парень из трущоб Мумбаи в шаге от главного приза в телевикторине. Откуда он знает все ответы?'},
+{t:'Жизнь Пи',o:'Life of Pi',y:2012,r:127,g:'приключения',e:'🐅',m:['wonder','deep'],k:1,c:['indian'],d:'После кораблекрушения юноша оказывается в спасательной шлюпке посреди океана — с бенгальским тигром.'},
+{t:'Отель «Мэриголд»: Лучший из экзотических',o:'The Best Exotic Marigold Hotel',y:2011,r:124,g:'комедия',e:'🌼',m:['cozy','touching'],k:0,c:['indian'],d:'Британские пенсионеры переезжают в Индию, в отель, который выглядит куда лучше на фото.'},
+{t:'Ночь в музее',o:'Night at the Museum',y:2006,r:108,g:'комедия',e:'🦖',m:['fun','wonder'],k:1,c:['american','snack'],d:'Новый ночной сторож обнаруживает, что после заката экспонаты музея оживают.'},
+{t:'Приключения Паддингтона 2',o:'Paddington 2',y:2017,r:103,g:'семейный',e:'🧸',m:['cozy','fun','touching'],k:1,c:['comfort','dessert'],d:'Вежливый медвежонок ищет подарок тётушке и оказывается в тюрьме по ложному обвинению.'},
+{t:'Чарли и шоколадная фабрика',o:'Charlie and the Chocolate Factory',y:2005,r:115,g:'сказка',e:'🍫',m:['wonder','fun'],k:1,c:['dessert'],d:'Пять детей с золотыми билетами попадают на загадочную фабрику Вилли Вонки.',dfav:'brownie',dn:'Шоколадный фильм требует шоколада. Без вариантов.'},
+{t:'Одержимость',o:'Whiplash',y:2014,r:106,g:'драма',e:'🥁',m:['deep','thrill'],k:0,c:['snack','american'],d:'Юный барабанщик и безжалостный преподаватель джаза. Кто кого сломает?'},
+{t:'Социальная сеть',o:'The Social Network',y:2010,r:120,g:'драма',e:'💻',m:['deep'],k:0,c:['american','asian'],d:'Как студент Гарварда создал Facebook и потерял по дороге лучшего друга.'},
+{t:'Волк с Уолл-стрит',o:'The Wolf of Wall Street',y:2013,r:180,g:'комедия',e:'🐺',m:['fun','action'],k:0,c:['american','seafood'],d:'Взлёт и падение брокера Джордана Белфорта — деньги, безумие и никаких тормозов.'},
+{t:'12 разгневанных мужчин',o:'12 Angry Men',y:1957,r:96,g:'драма',e:'⚖️',m:['deep','nostalgia'],k:1,c:['light','american'],d:'Присяжные почти единогласны — кроме одного, который просит просто поговорить.'},
+{t:'Леон',o:'Léon',y:1994,r:110,g:'криминал',e:'🪴',m:['action','touching'],k:0,c:['french','comfort'],d:'Одинокий наёмный убийца берёт под защиту двенадцатилетнюю соседку, чью семью убили.'},
+{t:'Такси',o:'Taxi',y:1998,r:86,g:'комедия',e:'🚕',m:['fun','action'],k:1,c:['french','mediterranean'],d:'Таксист-гонщик из Марселя и полицейский, который не умеет водить, ловят банду грабителей.'},
+{t:'Миссия невыполнима: Последствия',o:'Mission: Impossible – Fallout',y:2018,r:147,g:'экшен',e:'🚁',m:['action','thrill'],k:0,c:['snack','french'],d:'Итан Хант пытается остановить ядерную катастрофу, а Том Круз снова делает трюки сам.'},
+{t:'Дэдпул',o:'Deadpool',y:2016,r:108,g:'экшен',e:'🦸',m:['fun','action'],k:0,c:['mexican','snack'],d:'Наёмник со сверхспособностями и без тормозов мстит тому, кто испортил ему лицо.',fav:'burrito',fn:'Чимичанга — любимое слово Дэдпула. Обязательно.'},
+{t:'Однажды в… Голливуде',o:'Once Upon a Time in Hollywood',y:2019,r:161,g:'комедия',e:'🎬',m:['nostalgia','fun'],k:0,c:['american'],d:'Стареющий актёр и его каскадёр в Лос-Анджелесе 1969 года, когда эпоха меняется прямо на глазах.'}
+];
+
+/* Категории продуктов для списка покупок */
+const CAT={m:'Мясо и рыба',v:'Овощи, фрукты, зелень',d:'Молочное и яйца',b:'Хлеб и выпечка',g:'Бакалея и соусы',x:'Напитки и прочее',p:'Обычно есть дома'};
+
+/* ОСНОВНЫЕ БЛЮДА: cook — минут (0 = только заказ), ord — можно заказать, q — что искать в доставке, ing — продукты на 2 порции [название, количество, категория] */
+const FOODS=[
+{id:'pizza',n:'Пицца',e:'🍕',c:['italian','american','snack','comfort'],m:['fun','cozy','nostalgia'],cook:0,ord:1,q:'пицца',how:'Большая «Маргарита» или «Четыре сыра» — классика, которая нравится всем.'},
+{id:'carbonara',n:'Паста карбонара',e:'🍝',c:['italian'],m:['cozy','romance'],cook:20,ord:1,q:'карбонара',how:'Отварите спагетти на 1 минуту меньше, чем на пачке. Обжарьте бекон до хруста. Желтки взбейте с тёртым пармезаном и перцем. Снимите сковороду с огня, смешайте пасту с беконом, влейте яичную смесь и пару ложек воды от пасты — быстро перемешайте до кремовой текстуры. Без сливок!',ing:[['Спагетти','200 г','g'],['Бекон или гуанчале','150 г','m'],['Яйца (нужны желтки)','3 шт','d'],['Пармезан','60 г','d'],['Чёрный перец, соль','','p']]},
+{id:'meatballs',n:'Спагетти с фрикадельками',e:'🍅',c:['italian','comfort'],m:['cozy','nostalgia'],cook:45,ord:1,q:'паста с фрикадельками',how:'Фарш смешайте с яйцом, тёртым пармезаном, рубленым чесноком, солью — скатайте шарики. Обжарьте со всех сторон, добавьте томаты и лук, тушите 20 минут. В конце базилик. Подавайте со спагетти.',ing:[['Говяжий фарш','400 г','m'],['Спагетти','200 г','g'],['Томаты в собственном соку','1 банка','g'],['Лук','1 шт','v'],['Чеснок','3 зубчика','v'],['Базилик','1 пучок','v'],['Пармезан','40 г','d'],['Яйцо','1 шт','d'],['Оливковое масло, соль','','p']]},
+{id:'risotto',n:'Ризотто с грибами',e:'🍄',c:['italian'],m:['romance','cozy','deep'],cook:40,ord:1,q:'ризотто',how:'Обжарьте лук, добавьте рис на 2 минуты, влейте вино. Затем по половнику горячего бульона, постоянно помешивая, 18–20 минут. Грибы обжарьте отдельно и добавьте в конце вместе с маслом и пармезаном.',ing:[['Рис арборио','200 г','g'],['Шампиньоны','300 г','v'],['Лук','1 шт','v'],['Бульонный кубик','1 шт','g'],['Сливочное масло','40 г','d'],['Пармезан','50 г','d'],['Белое сухое вино (по желанию)','100 мл','x']]},
+{id:'lasagna',n:'Лазанья',e:'🧀',c:['italian','comfort'],m:['cozy','touching'],cook:0,ord:1,q:'лазанья',how:'Закажите в итальянском ресторане или возьмите готовую в кулинарии — 20 минут в духовке.'},
+{id:'bruschetta',n:'Брускетты с томатами и моцареллой',e:'🥖',c:['italian','light','snack'],m:['romance','fun'],cook:15,ord:0,how:'Нарежьте чиабатту, подсушите на сковороде или в духовке, натрите чесноком. Сверху черри кубиками, моцарелла, базилик, оливковое масло, соль.',ing:[['Чиабатта','1 шт','b'],['Томаты черри','250 г','v'],['Моцарелла','125 г','d'],['Базилик','1 пучок','v'],['Чеснок','2 зубчика','v'],['Оливковое масло, соль','','p']]},
+{id:'cheese',n:'Сырная тарелка с багетом',e:'🧀',c:['french','light','snack'],m:['romance','deep','cozy'],cook:10,ord:0,how:'Достаньте сыры за 30 минут до подачи. Раскладывайте от мягкого к острому, рядом виноград, мёд, орехи и тёплый багет.',ing:[['Бри или камамбер','150 г','d'],['Твёрдый сыр (гауда, маасдам)','150 г','d'],['Сыр с голубой плесенью','100 г','d'],['Багет','1 шт','b'],['Виноград','300 г','v'],['Грецкие орехи','50 г','g'],['Мёд','','g']]},
+{id:'quiche',n:'Киш с беконом и сыром',e:'🥧',c:['french','comfort'],m:['cozy'],cook:60,ord:1,q:'киш',how:'Тесто выложите в форму с бортиками, наколите вилкой. Сверху обжаренный бекон с луком и тёртый сыр. Залейте яйца, взбитые со сливками. 35 минут при 180°.',ing:[['Слоёное или песочное тесто','1 упаковка','g'],['Бекон','150 г','m'],['Твёрдый сыр','150 г','d'],['Яйца','3 шт','d'],['Сливки 20%','200 мл','d'],['Лук','1 шт','v']]},
+{id:'croque',n:'Крок-месье',e:'🥪',c:['french','snack','comfort'],m:['cozy','fun'],cook:15,ord:0,how:'Соус: на масле обжарьте ложку муки, влейте молоко, варите до густоты. Хлеб — ветчина — сыр — хлеб, сверху соус и ещё сыр. 7–8 минут в духовке при 200°.',ing:[['Тостовый хлеб','4 ломтика','b'],['Ветчина','150 г','m'],['Сыр (эмменталь или гауда)','150 г','d'],['Молоко','200 мл','d'],['Сливочное масло','20 г','d'],['Мука','','p']]},
+{id:'ratatouille',n:'Рататуй',e:'🍆',c:['french','light'],m:['cozy','touching'],cook:60,ord:0,how:'На дно формы — томатный соус с чесноком. Сверху по кругу внахлёст тонкие кружки баклажана, кабачка, томата и перца. Масло, травы, соль. Накрыть фольгой, 40 минут при 180°, затем 10 без фольги.',ing:[['Баклажан','1 шт','v'],['Кабачок','1 шт','v'],['Томаты','3 шт','v'],['Болгарский перец','1 шт','v'],['Томатный соус','200 г','g'],['Чеснок','2 зубчика','v'],['Прованские травы','','g'],['Оливковое масло, соль','','p']]},
+{id:'bourguignon',n:'Бёф бургиньон',e:'🥩',c:['french','comfort'],m:['cozy','romance'],cook:180,ord:0,how:'Обжарьте бекон, затем говядину кусками до корочки. Добавьте морковь, лук, чеснок, томатную пасту, влейте вино. Тушите под крышкой 2,5 часа на минимуме. За 20 минут до конца — обжаренные грибы. Блюдо на выходной.',ing:[['Говядина для тушения','700 г','m'],['Бекон','100 г','m'],['Красное сухое вино','500 мл','x'],['Шампиньоны','250 г','v'],['Морковь','2 шт','v'],['Лук','2 шт','v'],['Чеснок','3 зубчика','v'],['Томатная паста','1 ст. л.','g'],['Тимьян, лавровый лист','','g']]},
+{id:'bliny',n:'Блины с ветчиной и сыром',e:'🥞',c:['russian','french','comfort'],m:['cozy','nostalgia'],cook:40,ord:1,q:'блины',how:'Тесто: молоко, яйца, мука, щепоть соли и сахара, ложка масла. Тонкие блины на горячей сковороде. Начинка — ветчина с сыром, сложить конвертом и прогреть до расплавления.',ing:[['Молоко','500 мл','d'],['Яйца','2 шт','d'],['Ветчина','150 г','m'],['Сыр','150 г','d'],['Мука, сахар, масло','','p']]},
+{id:'sushi',n:'Суши и роллы',e:'🍣',c:['japanese','asian','light'],m:['romance','deep','cozy'],cook:0,ord:1,q:'роллы',how:'Сет на двоих: филадельфия, калифорния, пара нигири с лососем и тунцом. Мисо-суп в придачу.'},
+{id:'ramen',n:'Рамен с курицей',e:'🍜',c:['japanese','asian','comfort'],m:['cozy','wonder','touching'],cook:30,ord:1,q:'рамен',how:'Яйца — ровно 6,5 минут, в ледяную воду, очистить. Курицу обжарьте. Бульон доведите до кипения, вмешайте мисо-пасту и соевый соус. Лапшу отварите отдельно. В миску: лапша, бульон, курица, половинки яиц, зелёный лук, капля кунжутного масла.',ing:[['Лапша для рамена или удон','2 порции','g'],['Куриное филе','300 г','m'],['Яйца','2 шт','d'],['Мисо-паста','2 ст. л.','g'],['Соевый соус','','g'],['Кунжутное масло','','g'],['Бульонный кубик','1 шт','g'],['Зелёный лук','1 пучок','v']]},
+{id:'onigiri',n:'Онигири и мисо-суп',e:'🍙',c:['japanese','light'],m:['cozy','wonder'],cook:30,ord:0,how:'Отварите рис для суши. Влажными руками сформируйте треугольники с начинкой из тунца с майонезом, оберните полоской нори. Суп: в горячую воду мисо-пасту, кубики тофу и вакамэ.',ing:[['Рис для суши','300 г','g'],['Нори','1 упаковка','g'],['Тунец консервированный','1 банка','m'],['Майонез','','g'],['Мисо-паста','2 ст. л.','g'],['Тофу','150 г','g'],['Сушёные водоросли вакамэ','','g']]},
+{id:'wok',n:'Вок с курицей и овощами',e:'🥡',c:['asian','light'],m:['action','fun'],cook:20,ord:1,q:'вок',how:'Всё нарежьте заранее. На очень сильном огне: курица 4 минуты, затем овощи 3 минуты, затем отваренная лапша и соус терияки. Посыпать кунжутом.',ing:[['Лапша удон','2 порции','g'],['Куриное филе','300 г','m'],['Болгарский перец','1 шт','v'],['Морковь','1 шт','v'],['Брокколи','200 г','v'],['Соус терияки','','g'],['Чеснок','2 зубчика','v'],['Кунжут','','g']]},
+{id:'kchicken',n:'Корейская жареная курица',e:'🍗',c:['asian','snack'],m:['thrill','fun','action'],cook:0,ord:1,q:'корейская курица',how:'Возьмите в двух соусах — ян-ньём (остро-сладкий) и соево-чесночном, плюс маринованную редьку.'},
+{id:'dumplings',n:'Гёдза с соусом',e:'🥟',c:['asian','japanese','snack'],m:['romance','fun','deep'],cook:15,ord:1,q:'гёдза',how:'Замороженные гёдза обжарьте до золотистого низа, влейте 50 мл воды, накройте крышкой на 5 минут. Соус: соевый соус + рисовый уксус + капля кунжутного масла.',ing:[['Гёдза замороженные','1 упаковка (~20 шт)','m'],['Соевый соус','','g'],['Рисовый уксус','','g'],['Кунжутное масло','','g']]},
+{id:'burger',n:'Бургеры с картошкой фри',e:'🍔',c:['american','snack'],m:['action','fun'],cook:30,ord:1,q:'бургер',how:'Фарш разделите на 2 котлеты по 150 г, только соль и перец. Жарьте по 3 минуты с каждой стороны, сверху чеддер под крышку. Булки подрумяньте. Фри — в духовке или аэрогриле.',ing:[['Говяжий фарш','300 г','m'],['Булочки для бургеров','2 шт','b'],['Чеддер','4 ломтика','d'],['Томат','1 шт','v'],['Листовой салат','','v'],['Красный лук','1 шт','v'],['Маринованные огурцы','','g'],['Картофель фри замороженный','500 г','g'],['Кетчуп, горчица','','g']]},
+{id:'wings',n:'Крылышки BBQ',e:'🍖',c:['american','snack'],m:['action','thrill','fun'],cook:45,ord:1,q:'крылья барбекю',how:'Крылья смешайте с соусом барбекю, чесноком и паприкой. 40 минут при 200°, перевернув на полпути. Подавать с сельдереем и соусом блю-чиз.',ing:[['Куриные крылья','1 кг','m'],['Соус барбекю','200 г','g'],['Чеснок','3 зубчика','v'],['Копчёная паприка','','g'],['Стебли сельдерея','','v'],['Соус блю-чиз или сырный','','g']]},
+{id:'friedchicken',n:'Жареная курица в панировке',e:'🍗',c:['american','comfort'],m:['touching','fun','nostalgia'],cook:0,ord:1,q:'курица в панировке',how:'Бакет хрустящих ножек и крыльев, капустный салат и картофельное пюре.'},
+{id:'hotdog',n:'Хот-доги',e:'🌭',c:['american','snack'],m:['fun','nostalgia'],cook:15,ord:0,how:'Сосиски обжарьте или отварите, булки подогрейте. Сверху горчица, кетчуп, кубики огурца и хрустящий лук.',ing:[['Сосиски','4 шт','m'],['Булочки для хот-догов','4 шт','b'],['Маринованные огурцы','','g'],['Жареный лук','','g'],['Горчица, кетчуп','','g']]},
+{id:'steak',n:'Стейк с картофелем и розмарином',e:'🥩',c:['american','festive'],m:['romance','action'],cook:40,ord:1,q:'стейк',how:'Картофель дольками с маслом и розмарином — 35 минут при 200°. Стейки комнатной температуры: по 3–4 минуты с каждой стороны на раскалённой сковороде, в конце масло и чеснок. Отдых 5 минут.',ing:[['Стейк рибай','2 шт (~600 г)','m'],['Картофель','600 г','v'],['Розмарин','','v'],['Чеснок','3 зубчика','v'],['Сливочное масло','30 г','d'],['Соль крупная, перец','','p']]},
+{id:'shrimp',n:'Креветки в чесночном масле',e:'🍤',c:['seafood','mediterranean','american','light'],m:['fun','romance'],cook:15,ord:1,q:'креветки',how:'Растопите масло, добавьте много чеснока и щепоть чили на 1 минуту. Креветки — на 3 минуты. Лимонный сок, петрушка. Макать багетом обязательно.',ing:[['Креветки очищенные','500 г','m'],['Сливочное масло','60 г','d'],['Чеснок','5 зубчиков','v'],['Лимон','1 шт','v'],['Петрушка','1 пучок','v'],['Хлопья чили','','g'],['Багет','1 шт','b']]},
+{id:'nachos',n:'Начос с сыром и гуакамоле',e:'🧀',c:['mexican','snack'],m:['thrill','fun','action'],cook:15,ord:0,how:'Чипсы на противень, сверху чеддер и халапеньо — 5 минут при 200°. Гуакамоле: раздавить авокадо вилкой, лайм, мелко лук, томат, кинза, соль.',ing:[['Кукурузные чипсы','200 г','g'],['Чеддер','150 г','d'],['Халапеньо','1 банка','g'],['Авокадо','2 шт','v'],['Лайм','1 шт','v'],['Томат','1 шт','v'],['Красный лук','1 шт','v'],['Кинза','1 пучок','v']]},
+{id:'tacos',n:'Тако с говядиной',e:'🌮',c:['mexican'],m:['fun','touching'],cook:30,ord:1,q:'тако',how:'Фарш обжарьте со специями для тако. Тортильи прогрейте на сухой сковороде. Собирайте за столом: мясо, салат, томат, сыр, сметана, лайм.',ing:[['Тортильи','6 шт','b'],['Говяжий фарш','400 г','m'],['Специи для тако','1 пакетик','g'],['Листовой салат','','v'],['Томаты','2 шт','v'],['Сыр','100 г','d'],['Сметана','','d'],['Лайм','1 шт','v']]},
+{id:'burrito',n:'Буррито / чимичанга',e:'🌯',c:['mexican','snack'],m:['action','fun'],cook:0,ord:1,q:'буррито',how:'Буррито с курицей или говядиной; если найдёте чимичангу (жареный буррито) — берите её.'},
+{id:'quesadilla',n:'Кесадилья с курицей',e:'🫓',c:['mexican','snack'],m:['fun','thrill'],cook:15,ord:0,how:'Курицу обжарьте с перцем. На половину тортильи — сыр, курица, ещё сыр, сложить пополам. Обжарить на сухой сковороде по 2 минуты с каждой стороны. Нарезать треугольниками.',ing:[['Тортильи','4 шт','b'],['Куриное филе','300 г','m'],['Сыр','200 г','d'],['Болгарский перец','1 шт','v'],['Сальса или сметана','','g']]},
+{id:'cuban',n:'Кубинский сэндвич',e:'🥪',c:['american','mexican'],m:['cozy','fun'],cook:25,ord:0,how:'Разрежьте батон вдоль, смажьте горчицей. Слои: буженина, ветчина, сыр, огурцы. Обжарьте на сливочном масле, прижав сверху тяжёлой сковородой, до хруста и расплавленного сыра.',ing:[['Батон или чиабатта','1 шт','b'],['Буженина','200 г','m'],['Ветчина','150 г','m'],['Сыр','150 г','d'],['Маринованные огурцы','','g'],['Горчица','','g'],['Сливочное масло','20 г','d']]},
+{id:'khachapuri',n:'Хачапури по-аджарски',e:'🛶',c:['georgian','comfort'],m:['cozy','fun'],cook:0,ord:1,q:'хачапури',how:'Желток и масло размешайте в сыре и макайте отломанным бортиком.'},
+{id:'khinkali',n:'Хинкали',e:'🥟',c:['georgian'],m:['fun','nostalgia','touching'],cook:0,ord:1,q:'хинкали',how:'С говядиной и свининой. Едят руками: сначала выпить бульон, хвостик оставить на тарелке.'},
+{id:'shashlik',n:'Шашлык с лавашом',e:'🍢',c:['georgian','russian'],m:['action','fun','nostalgia'],cook:0,ord:1,q:'шашлык',how:'Свиная шея или баранина, лаваш, маринованный лук, ткемали, свежие овощи и зелень.'},
+{id:'olivier',n:'Оливье и селёдка под шубой',e:'🥗',c:['russian','festive'],m:['nostalgia','cozy'],cook:50,ord:1,q:'оливье',how:'Отварите картофель, морковь, свёклу и яйца. Оливье: всё кубиками + огурцы, горошек, колбаса, майонез. Шуба слоями: сельдь, картофель, морковь, яйцо, свёкла, каждый слой — майонез.',ing:[['Картофель','5 шт','v'],['Морковь','2 шт','v'],['Свёкла','2 шт','v'],['Яйца','4 шт','d'],['Солёные огурцы','3 шт','g'],['Зелёный горошек','1 банка','g'],['Докторская колбаса','300 г','m'],['Филе сельди','300 г','m'],['Майонез','','g']]},
+{id:'pelmeni',n:'Пельмени со сметаной',e:'🥟',c:['russian','comfort'],m:['cozy','nostalgia'],cook:15,ord:1,q:'пельмени',how:'В кипящую подсоленную воду — лавровый лист и перец горошком. Варить 5–7 минут после всплытия. Сметана, укроп, сливочное масло.',ing:[['Пельмени','800 г','m'],['Сметана','','d'],['Укроп','1 пучок','v'],['Лавровый лист','','g']]},
+{id:'potato',n:'Жареная картошка с грибами',e:'🥔',c:['russian','comfort'],m:['nostalgia','cozy'],cook:35,ord:0,how:'Картофель брусочками на большую сковороду с маслом, первые 10 минут не трогать. Отдельно грибы с луком. Соединить, посолить в конце, укроп. Солёные огурцы — рядом.',ing:[['Картофель','1 кг','v'],['Шампиньоны','300 г','v'],['Лук','2 шт','v'],['Укроп','1 пучок','v'],['Солёные огурцы','','g'],['Растительное масло, соль','','p']]},
+{id:'borsch',n:'Борщ с пампушками',e:'🍲',c:['russian','comfort'],m:['cozy','touching'],cook:0,ord:1,q:'борщ',how:'Со сметаной, чесночными пампушками и салом.'},
+{id:'shawarma',n:'Шаверма или фалафель с хумусом',e:'🥙',c:['eastern','snack'],m:['action','wonder','fun'],cook:0,ord:1,q:'шаверма',how:'Шаверма с курицей или фалафель-тарелка: хумус, табуле, лепёшка, соус тахини.'},
+{id:'plov',n:'Плов',e:'🍚',c:['eastern','comfort'],m:['cozy','wonder'],cook:0,ord:1,q:'плов',how:'Плов из баранины, салат «Ачик-чучук» и лепёшка.'},
+{id:'tikka',n:'Курица тикка масала',e:'🍛',c:['indian'],m:['wonder','touching','cozy'],cook:0,ord:1,q:'тикка масала',how:'Тикка масала, басмати и чесночный наан.'},
+{id:'chana',n:'Карри с нутом и шпинатом',e:'🫘',c:['indian','light'],m:['cozy','deep'],cook:35,ord:0,how:'Обжарьте лук, чеснок и имбирь, добавьте гарам масалу и куркуму на 1 минуту. Томаты, нут, кокосовое молоко — 15 минут. Шпинат в самом конце. Подавать с рисом басмати.',ing:[['Нут консервированный','2 банки','g'],['Кокосовое молоко','400 мл','g'],['Томаты в собственном соку','1 банка','g'],['Шпинат','200 г','v'],['Лук','1 шт','v'],['Чеснок','3 зубчика','v'],['Имбирь','кусочек 3 см','v'],['Гарам масала, куркума','','g'],['Рис басмати','200 г','g']]},
+{id:'gyros',n:'Гирос и греческий салат',e:'🥗',c:['mediterranean','light'],m:['romance','fun'],cook:0,ord:1,q:'гирос',how:'Гирос со свининой или курицей, соус дзадзики, греческий салат с фетой и оливками.'},
+{id:'paella',n:'Паэлья с морепродуктами',e:'🥘',c:['mediterranean','seafood'],m:['romance','fun'],cook:0,ord:1,q:'паэлья',how:'Паэлья на двоих из испанского ресторана.'},
+{id:'popcorn',n:'Попкорн с разными вкусами + сэндвичи',e:'🍿',c:['snack','american'],m:['thrill','fun','action'],cook:15,ord:0,how:'Зёрна в кастрюлю с маслом под крышку, трясти. Половину — с солью и пармезаном, половину — с растопленным маслом и сахаром. Плюс пара горячих сэндвичей с ветчиной и сыром для сытости.',ing:[['Кукуруза для попкорна','150 г','g'],['Сливочное масло','50 г','d'],['Пармезан','30 г','d'],['Тостовый хлеб','4 ломтика','b'],['Ветчина','100 г','m'],['Сыр','100 г','d'],['Сахар, соль','','p']]},
+{id:'nuggets',n:'Наггетсы и картошка фри',e:'🍟',c:['snack','american'],m:['fun','thrill'],cook:25,ord:1,q:'наггетсы',how:'Филе кусочками — в яйцо, затем в панко. 15 минут при 200° или в аэрогриле. Фри — туда же. Соусы: сырный, барбекю, кисло-сладкий.',ing:[['Куриное филе','500 г','m'],['Панировочные сухари панко','100 г','g'],['Яйца','2 шт','d'],['Картофель фри замороженный','500 г','g'],['Соусы','','g']]},
+{id:'macncheese',n:'Мак-н-чиз',e:'🧀',c:['american','comfort'],m:['cozy','touching','thrill'],cook:25,ord:0,how:'Отварите рожки. Соус: масло + ложка муки, влить молоко, варить до густоты, вмешать чеддер. Смешать с макаронами, сверху сухари — 10 минут под грилем.',ing:[['Макароны рожки','250 г','g'],['Чеддер','200 г','d'],['Молоко','500 мл','d'],['Сливочное масло','40 г','d'],['Панировочные сухари','','g'],['Мука','','p']]},
+{id:'pumpkin',n:'Тыквенный крем-суп с гренками',e:'🎃',c:['comfort','light'],m:['cozy','deep'],cook:40,ord:1,q:'тыквенный суп',how:'Тыкву, морковь и лук кубиками в кастрюлю, залить водой вровень, варить 20 минут. Пробить блендером со сливками, мускатный орех, соль. Сверху семечки и гренки.',ing:[['Тыква','800 г','v'],['Морковь','1 шт','v'],['Лук','1 шт','v'],['Сливки 20%','200 мл','d'],['Тыквенные семечки','','g'],['Мускатный орех','','g'],['Батон для гренок','','b']]},
+{id:'fondue',n:'Сырное фондю',e:'🫕',c:['french','festive'],m:['romance','cozy'],cook:20,ord:0,how:'Натрите кастрюлю чесноком, нагрейте вино, постепенно вмешайте тёртые сыры с крахмалом до однородности. Не кипятить! Макать хлеб, отварной картофель, корнишоны.',ing:[['Грюйер','200 г','d'],['Эмменталь','200 г','d'],['Белое сухое вино','200 мл','x'],['Чеснок','1 зубчик','v'],['Крахмал','1 ст. л.','p'],['Багет','1 шт','b'],['Молодой картофель','400 г','v'],['Корнишоны','','g']]},
+{id:'poke',n:'Поке-боул',e:'🥗',c:['japanese','light','seafood'],m:['deep','action'],cook:0,ord:1,q:'поке',how:'С лососем или тунцом, авокадо, эдамаме, рисом и соусом понзу.'}
+];
+
+/* ДЕСЕРТЫ: cook — можно приготовить, buy — купить готовым в магазине, ord — заказать */
+const DESSERTS=[
+{id:'tiramisu',n:'Тирамису',e:'☕',c:['italian'],cook:30,buy:1,ord:1,q:'тирамису',how:'Желтки взбить с сахаром, вмешать маскарпоне, затем белки, взбитые в пену. Савоярди обмакнуть в остывший кофе, слои: печенье — крем. Какао сверху. Лучше сделать утром — нужно 4+ часа в холодильнике.',ing:[['Маскарпоне','250 г','d'],['Савоярди','200 г','g'],['Яйца','2 шт','d'],['Кофе','200 мл','g'],['Какао','','g'],['Сахар','','p']]},
+{id:'pannacotta',n:'Панна-котта с ягодами',e:'🍮',c:['italian','french','light'],cook:15,chill:1,buy:0,ord:1,q:'панна котта',how:'Желатин замочить. Сливки с сахаром и ванилью нагреть (не кипятить), вмешать желатин, разлить по стаканам. 3 часа в холодильнике. Сверху ягоды.',ing:[['Сливки 33%','400 мл','d'],['Желатин','10 г','g'],['Ягоды','150 г','v'],['Ванильный сахар','','g'],['Сахар','','p']]},
+{id:'brownie',n:'Тёплый брауни с мороженым',e:'🍫',c:['american','dessert','comfort'],cook:35,buy:1,ord:1,q:'брауни',how:'Растопить шоколад с маслом, вмешать яйца, сахар и муку. 20 минут при 180° — середина должна остаться влажной. Подавать тёплым с пломбиром.',ing:[['Тёмный шоколад','200 г','g'],['Сливочное масло','150 г','d'],['Яйца','3 шт','d'],['Мороженое пломбир','','d'],['Сахар 150 г, мука 80 г','','p']]},
+{id:'waffles',n:'Вафли с ягодами и мороженым',e:'🧇',c:['american','comfort','dessert'],cook:25,buy:0,ord:1,q:'вафли',how:'Тесто: мука, молоко, яйца, сахар, растопленное масло. Нужна вафельница. Сверху ягоды, мороженое, кленовый сироп.',ing:[['Молоко','400 мл','d'],['Яйца','2 шт','d'],['Сливочное масло','100 г','d'],['Ягоды','200 г','v'],['Мороженое','','d'],['Кленовый сироп','','g'],['Мука, сахар','','p']]},
+{id:'creme',n:'Крем-брюле',e:'🍮',c:['french','romance'],cook:0,buy:1,ord:1,q:'крем брюле',how:'Возьмите в кондитерской или закажите; если есть горелка — карамелизуйте сахар прямо перед подачей.'},
+{id:'macarons',n:'Макаруны',e:'🎨',c:['french','dessert'],cook:0,buy:1,ord:1,q:'макаруны',how:'Коробка разных вкусов из кондитерской: фисташка, малина, солёная карамель.'},
+{id:'mochi',n:'Моти',e:'🍡',c:['japanese','asian'],cook:0,buy:1,ord:1,q:'моти',how:'Моти с манго, клубникой и матчей — продаются в азиатских магазинах и японских ресторанах.'},
+{id:'churros',n:'Чуррос с шоколадным соусом',e:'🥖',c:['mexican','mediterranean'],cook:0,buy:0,ord:1,q:'чуррос',how:'Закажите с шоколадным или карамельным соусом для макания.'},
+{id:'baklava',n:'Пахлава',e:'🍯',c:['eastern','mediterranean'],cook:0,buy:1,ord:1,q:'пахлава',how:'Ореховая или фисташковая пахлава — к ней крепкий чай.'},
+{id:'churchkhela',n:'Чурчхела и пеламуши',e:'🍇',c:['georgian'],cook:0,buy:1,ord:1,q:'чурчхела',how:'Чурчхела с грецким орехом — на рынке или в грузинской лавке.'},
+{id:'medovik',n:'Медовик',e:'🍰',c:['russian','festive','comfort'],cook:0,buy:1,ord:1,q:'медовик',how:'Пара кусочков из хорошей кондитерской.'},
+{id:'syrniki',n:'Сырники со сметаной и вареньем',e:'🥞',c:['russian','comfort'],cook:25,buy:0,ord:1,q:'сырники',how:'Творог, яйцо, 3 ложки муки, сахар. Сформировать шайбы, обвалять в муке, жарить на среднем огне по 3 минуты с каждой стороны.',ing:[['Творог 5–9%','400 г','d'],['Яйцо','1 шт','d'],['Сметана','','d'],['Варенье','','g'],['Мука, сахар','','p']]},
+{id:'sharlotka',n:'Шарлотка',e:'🍎',c:['russian','comfort','nostalgia'],cook:50,buy:0,ord:0,how:'Яйца взбить с сахаром до пышности, вмешать муку. Яблоки дольками в форму, залить тестом. 35–40 минут при 180°.',ing:[['Яблоки','4 шт','v'],['Яйца','3 шт','d'],['Сахар 150 г, мука 150 г','','p']]},
+{id:'cheesecake',n:'Чизкейк Нью-Йорк',e:'🍰',c:['american','dessert'],cook:0,buy:1,ord:1,q:'чизкейк',how:'Классический чизкейк из кондитерской, к нему ягодный соус.'},
+{id:'gulab',n:'Гулаб джамун или манговое мороженое',e:'🥭',c:['indian'],cook:0,buy:0,ord:1,q:'гулаб джамун',how:'Сладкие шарики в сиропе из индийского ресторана — или просто манговое мороженое.'},
+{id:'icecream',n:'Мороженое с ягодами и шоколадом',e:'🍨',c:['snack','light','comfort','dessert'],cook:5,buy:1,ord:0,how:'Пломбир, свежие ягоды, тёртый шоколад, пара печенек сверху.',ing:[['Мороженое пломбир','500 г','d'],['Ягоды','150 г','v'],['Шоколад','50 г','g']]},
+{id:'candy',n:'Сладкий кинонабор',e:'🍬',c:['snack','american'],cook:0,buy:1,ord:0,how:'Мармелад, M&M’s, карамельный попкорн — всё в большую миску на диване.',ing:[['Мармелад','','g'],['Драже M&M’s','','g'],['Карамельный попкорн','','g']]}
+];
+
+/* НАПИТКИ: a — алкоголь (1) / без (0) */
+const DRINKS=[
+{id:'chianti',n:'Кьянти',e:'🍷',a:1,c:['italian'],m:['romance','cozy','deep'],how:'Итальянское красное сухое — к пасте и томатным соусам идеально.',ing:[['Кьянти','1 бутылка','x']]},
+{id:'prosecco',n:'Просекко',e:'🥂',a:1,c:['italian','festive','light'],m:['romance','fun'],how:'Охладить до 6–8°. Лёгкое игристое для хорошего настроения.',ing:[['Просекко','1 бутылка','x']]},
+{id:'aperol',n:'Апероль шприц',e:'🍹',a:1,c:['italian','mediterranean','light'],m:['fun','romance'],how:'В бокал со льдом: 3 части просекко, 2 части апероля, всплеск содовой, долька апельсина.',ing:[['Апероль','','x'],['Просекко','1 бутылка','x'],['Содовая','','x'],['Апельсин','1 шт','v']]},
+{id:'negroni',n:'Негрони',e:'🥃',a:1,c:['italian'],m:['deep','thrill'],how:'Джин, кампари и красный вермут поровну, много льда, апельсиновая цедра.',ing:[['Джин','','x'],['Кампари','','x'],['Красный вермут','','x'],['Апельсин','1 шт','v']]},
+{id:'bordeaux',n:'Бордо',e:'🍷',a:1,c:['french','american','festive'],m:['romance','deep','action'],how:'Плотное красное — к мясу, сырам и долгим разговорам.',ing:[['Красное вино Бордо','1 бутылка','x']]},
+{id:'white',n:'Белое сухое (шабли, совиньон блан)',e:'🥂',a:1,c:['french','seafood','light','japanese'],m:['romance','cozy'],how:'Охладить до 8–10°. К морепродуктам, сыру и лёгким блюдам.',ing:[['Белое сухое вино','1 бутылка','x']]},
+{id:'sparkling',n:'Шампанское / игристое брют',e:'🍾',a:1,c:['festive','french','russian'],m:['romance','nostalgia','fun'],how:'Охладить и открыть с тихим «пш», а не с хлопком.',ing:[['Игристое брют','1 бутылка','x']]},
+{id:'rose',n:'Розовое вино',e:'🌸',a:1,c:['mediterranean','light'],m:['romance','fun'],how:'Хорошо охладить. Лёгкое, летнее, ко всему средиземноморскому.',ing:[['Розовое сухое вино','1 бутылка','x']]},
+{id:'saperavi',n:'Саперави',e:'🍷',a:1,c:['georgian'],m:['fun','nostalgia','touching'],how:'Грузинское красное — к хинкали, шашлыку и тостам.',ing:[['Саперави','1 бутылка','x']]},
+{id:'beer',n:'Холодное пиво',e:'🍺',a:1,c:['american','snack','asian','eastern'],m:['action','fun','thrill'],how:'Лагер или IPA, хорошо охлаждённое — к бургерам, крыльям и экшену.',ing:[['Пиво','4 бутылки','x']]},
+{id:'sake',n:'Сакэ',e:'🍶',a:1,c:['japanese'],m:['deep','romance'],how:'Подавать слегка охлаждённым в маленьких чашечках.',ing:[['Сакэ','1 бутылка','x']]},
+{id:'highball',n:'Японский хайбол',e:'🥃',a:1,c:['japanese','asian'],m:['deep','cozy'],how:'Высокий стакан со льдом, 50 мл виски, долить содовой, лимонная цедра.',ing:[['Виски','','x'],['Содовая','','x'],['Лимон','1 шт','v']]},
+{id:'margarita',n:'Маргарита',e:'🍸',a:1,c:['mexican'],m:['fun','action'],how:'Текила, трипл-сек и сок лайма 2:1:1, лёд, край бокала в соли.',ing:[['Текила','','x'],['Трипл-сек','','x'],['Лаймы','3 шт','v']]},
+{id:'mojito',n:'Мохито',e:'🌿',a:1,c:['mexican','american','light'],m:['fun','action'],how:'Мята, лайм, сахар — размять, добавить ром и лёд, долить содовой.',ing:[['Белый ром','','x'],['Мята','1 пучок','v'],['Лаймы','2 шт','v'],['Содовая','','x']]},
+{id:'sangria',n:'Сангрия',e:'🍷',a:1,c:['mediterranean','seafood','mexican'],m:['fun','romance'],how:'Красное вино, апельсин, яблоко, немного бренди и корица — настоять час в холодильнике.',ing:[['Красное сухое вино','1 бутылка','x'],['Апельсин','1 шт','v'],['Яблоко','1 шт','v']]},
+{id:'mulled',n:'Глинтвейн',e:'🍷',a:1,c:['comfort','festive'],m:['cozy','nostalgia','romance'],how:'Красное вино, апельсин, корица, гвоздика, мёд — нагреть до 70°, не кипятить.',ing:[['Красное сухое вино','1 бутылка','x'],['Апельсин','1 шт','v'],['Корица, гвоздика, мёд','','g']]},
+{id:'whiterussian',n:'Белый русский',e:'🥛',a:1,c:['comfort','snack'],m:['fun','cozy'],how:'Лёд, 50 мл водки, 25 мл кофейного ликёра, сверху сливки.',ing:[['Водка','','x'],['Кофейный ликёр','','x'],['Сливки 10%','200 мл','d']]},
+{id:'oldfashioned',n:'Олд фэшн',e:'🥃',a:1,c:['american','snack'],m:['deep','thrill','nostalgia'],how:'Бурбон, кубик сахара, пара капель биттера, большой кубик льда, апельсиновая цедра.',ing:[['Бурбон','','x'],['Биттер','','x'],['Апельсин','1 шт','v']]},
+{id:'nastoika',n:'Клюквенная настойка',e:'🍒',a:1,c:['russian'],m:['nostalgia','fun','cozy'],how:'Охладить в морозилке, подавать в рюмках — к пельменям и соленьям.',ing:[['Клюквенная настойка','1 бутылка','x']]},
+{id:'lemonade',n:'Домашний лимонад',e:'🍋',a:0,c:['light','american','mediterranean'],m:['fun','touching'],how:'Сок 3 лимонов, 3 ложки сахара или мёда, мята, лёд, газированная вода.',ing:[['Лимоны','3 шт','v'],['Мята','1 пучок','v'],['Газированная вода','1 л','x']]},
+{id:'mors',n:'Клюквенный морс',e:'🫐',a:0,c:['russian','comfort'],m:['nostalgia','cozy'],how:'Клюкву размять, сок отжать; жмых проварить 5 минут с сахаром, процедить и смешать с соком.',ing:[['Клюква замороженная','300 г','v'],['Сахар','','p']]},
+{id:'tarkhun',n:'Тархун и Лагидзе',e:'💚',a:0,c:['georgian','nostalgia'],m:['nostalgia','fun'],how:'Охлаждённый тархун или грузинские воды Лагидзе — сливочный и грушевый.',ing:[['Лимонад «Тархун»','1 л','x']]},
+{id:'lassi',n:'Манго-ласси',e:'🥭',a:0,c:['indian'],m:['wonder','cozy'],how:'Пробить блендером манго, йогурт, молоко, щепоть кардамона и лёд.',ing:[['Манго (или пюре)','1 шт','v'],['Йогурт натуральный','300 г','d'],['Молоко','100 мл','d']]},
+{id:'masala',n:'Масала-чай',e:'🫖',a:0,c:['indian','eastern','comfort'],m:['cozy','deep'],how:'Чёрный чай сварить с молоком, имбирём, кардамоном, корицей и сахаром.',ing:[['Чёрный чай','','g'],['Молоко','400 мл','d'],['Имбирь','кусочек','v'],['Кардамон, корица','','g']]},
+{id:'matcha',n:'Матча латте или зелёный чай',e:'🍵',a:0,c:['japanese','asian','light'],m:['deep','cozy','wonder'],how:'1 ч. л. матчи взбить венчиком в 50 мл горячей воды, долить вспененным молоком.',ing:[['Матча','','g'],['Молоко','400 мл','d']]},
+{id:'cocoa',n:'Горячий шоколад с маршмеллоу',e:'☕',a:0,c:['comfort','dessert','festive'],m:['cozy','touching','nostalgia'],how:'Молоко + тёртый шоколад + ложка какао, нагреть, сверху маршмеллоу.',ing:[['Молоко','500 мл','d'],['Шоколад','100 г','g'],['Маршмеллоу','','g']]},
+{id:'mulled0',n:'Безалкогольный глинтвейн',e:'🍎',a:0,c:['comfort','festive'],m:['cozy','romance'],how:'Вишнёвый или виноградный сок с апельсином, корицей, гвоздикой и мёдом — прогреть.',ing:[['Вишнёвый или виноградный сок','1 л','x'],['Апельсин','1 шт','v'],['Корица, гвоздика, мёд','','g']]},
+{id:'cola',n:'Кола со льдом и лаймом',e:'🥤',a:0,c:['american','snack','mexican'],m:['action','thrill','fun'],how:'Много льда, долька лайма. Классика кинозала.',ing:[['Кола','1 л','x'],['Лайм','1 шт','v']]},
+{id:'milkshake',n:'Молочный коктейль',e:'🥤',a:0,c:['american','dessert'],m:['fun','nostalgia'],how:'Пломбир + молоко 2:1 в блендер, по желанию банан или клубника.',ing:[['Мороженое пломбир','300 г','d'],['Молоко','200 мл','d']]},
+{id:'mojito0',n:'Безалкогольный мохито',e:'🌿',a:0,c:['mexican','light','mediterranean','american'],m:['fun','romance'],how:'Мята, лайм, сахар — размять, лёд, долить спрайтом или содовой.',ing:[['Мята','1 пучок','v'],['Лаймы','2 шт','v'],['Спрайт или содовая','1 л','x']]},
+{id:'bubbletea',n:'Бабл ти',e:'🧋',a:0,c:['asian','japanese'],m:['fun','wonder'],how:'Закажите вместе с ужином — молочный улун или манго-маракуйя.',ing:[]},
+{id:'ayran',n:'Айран или мятный чай',e:'🫖',a:0,c:['eastern','georgian'],m:['cozy','action'],how:'Холодный айран к мясу или зелёный чай с мятой и лимоном.',ing:[['Айран','1 л','d']]},
+{id:'butterbeer',n:'«Сливочное пиво» (без алкоголя)',e:'🍺',a:0,c:['festive','comfort','dessert'],m:['wonder','cozy'],how:'Крем-сода или имбирный лимонад + шапка из сливок, взбитых с ложкой карамельного сиропа.',ing:[['Крем-сода или имбирный лимонад','1 л','x'],['Сливки 33%','200 мл','d'],['Карамельный сироп','','g']]},
+{id:'nzero',n:'Безалкогольное игристое',e:'🥂',a:0,c:['festive','light','french','italian'],m:['romance','fun'],how:'Охладить как шампанское — праздник без градуса.',ing:[['Безалкогольное игристое','1 бутылка','x']]}
+];
+
+const CUISINE_WHY={
+ italian:'Итальянское кино — итальянский стол.',french:'Французский фильм — французский ужин.',japanese:'Японская история просит японской еды.',asian:'Азиатское кино — азиатская кухня.',american:'Американское кино — американская классика.',russian:'Наше кино — наш стол.',georgian:'Грузинский колорит на экране и на тарелке.',mexican:'Мексиканские мотивы — мексиканская еда.',indian:'Индийские краски и специи.',eastern:'Восточный колорит — восточная кухня.',mediterranean:'Средиземноморье на экране и на тарелке.',seafood:'Морской фильм — морепродукты.',snack:'Напряжённое кино — еда, которую можно есть, не отрываясь от экрана.',comfort:'Тёплый фильм — тёплая, уютная еда.',light:'Лёгкое кино — лёгкий ужин.',dessert:'Сладкий фильм — сладкий финал.',festive:'Праздничное кино — праздничный стол.'
+};
+
+
+const CUIS_ADJ={italian:'итальянск',french:'французск',japanese:'японск',asian:'азиатск',american:'американск',russian:'русск',georgian:'грузинск',mexican:'мексиканск',indian:'индийск',eastern:'восточн',mediterranean:'средиземноморск'};
+const VIBE_D={snack:'Сладкое, которое удобно есть с дивана.',comfort:'Уютный сладкий финал.',light:'Лёгкий десерт, чтобы не перегрузиться.',dessert:'Сладкий фильм — сладкий финал.',festive:'Праздничный десерт к праздничному кино.',seafood:'Лёгкий финал после морского ужина.'};
+const VIBE_R={snack:'Освежает, пока на экране напряжение.',comfort:'Тёплый, уютный глоток к фильму.',light:'Лёгкий напиток — не перебивает ужин.',dessert:'Сладкий напиток к сладкому фильму.',festive:'Праздничный бокал к праздничному кино.',seafood:'Классическая пара к морепродуктам.'};
+function whyFor(key,c){if(key==='f')return CUISINE_WHY[c];const a=CUIS_ADJ[c];if(a)return key==='d'?'Сладкий финал из '+a+'ой кухни — в тон фильму.':'Напиток '+a+'ой кухни — в пару к фильму и блюду.';return (key==='d'?VIBE_D:VIBE_R)[c]||CUISINE_WHY[c]}
+
+/* ===== СОСТОЯНИЕ ===== */
+const S={screen:'home',moods:[],who:'pair',time:'any',food:'any',drink:'any',movie:null,main:null,dess:null,drk:null,shown:{m:new Set(),f:new Set(),d:new Set(),r:new Set()},fav:{},tab:'recipe',checked:new Set()};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let seen=new Set(store.get('kv_seen',[]));
+let hist=store.get('kv_hist',[]);
+/* ===== ТЕМЫ ===== */
+const THEMES=[
+ {id:'len',n:'Лён и терракота',sw:['#f3eadf','#fffaf3','#c56a43','#7f9171'],bg:'#fffaf3',ink:'#3d3029',acc:'#c56a43',soft:'#f3dccd',r:'Тёплый бежевый как свет лампы 2700–3000 K, который люди считают самым уютным. Тёплые оттенки делают еду аппетитнее.'},
+ {id:'shalfey',n:'Шалфей и сливки',sw:['#eef0e6','#fbfbf6','#5f8a62','#b9774f'],bg:'#fbfbf6',ink:'#2f3a2f',acc:'#5f8a62',soft:'#dde9d9',r:'Зелёный — один из самых «приятных» оттенков в исследованиях. Приглушённый и светлый — успокаивает, а не бодрит.'},
+ {id:'sumerki',n:'Лавандовые сумерки',sw:['#ece8f0','#fbf9fc','#7f6fa8','#c08465'],bg:'#fbf9fc',ink:'#33303f',acc:'#7f6fa8',soft:'#e5dff1',r:'Фиолетово-синий вызывал наименьшее возбуждение в классическом исследовании Valdez & Mehrabian (1994). Мягко и вечерне.'},
+ {id:'more',n:'Туман у моря',sw:['#e8eef1','#fbfcfc','#55819e','#cf8a5a'],bg:'#fbfcfc',ink:'#2c3a44',acc:'#55819e',soft:'#dbe7ef',r:'Синий чаще всего называют самым спокойным цветом. Чтобы еда не выглядела холодной, блюда подсвечены тёплым персиковым.'},
+ {id:'karamel',n:'Карамель и какао (тёмная)',sw:['#211913','#2c221b','#e2a462','#b4c398'],bg:'#2c221b',ink:'#f3e6d6',acc:'#e2a462',soft:'#4b3524',r:'Для позднего вечера: тёмный тёплый экран светит меньше, а янтарный акцент похож на свет свечи.'}
+];
+let theme=store.get('kv_theme','auto');
+function applyTheme(id){theme=id;store.set('kv_theme',id);const r=resolvedTheme();const m=document.querySelector('meta[name=theme-color]');const bg=AUTO[r]?AUTO[r][0]:(THEMES.find(x=>x.id===r)||{sw:['#f3eadf']}).sw[0];if(m)m.setAttribute('content',bg);renderFx()}
+function rTheme(){
+ const now=curSeason()+'-'+curTod();
+ const cell=(id)=>{const v=AUTO[id];return `<button class="acell ${resolvedTheme()===id?'on':''}" style="background:${v[0]}" onclick="applyTheme('${id}');rTheme()"><span class="now" style="color:${v[4]}">${id===now?'СЕЙЧАС':''}</span><span class="p" style="background:${v[1]}"></span><span class="a" style="background:${v[7]}"></span></button>`};
+ app.innerHTML=header()+`<div class="fade"><button class="back" onclick="go(S.movie?'result':'home')">← Назад</button><h1>Цвет <em>вечера</em></h1>
+ <p class="sub">В авто-режиме дизайн сам меняется по времени года и суток, а погода добавляет живой фон.</p>
+ <button class="modebtn ${theme==='auto'?'on':''}" onclick="applyTheme('auto');rTheme()"><span style="font-size:28px">🪄</span><span><b>Авто</b><small>Сейчас: ${ctxLabel().toLowerCase()} · ${WEATHER[weather].e} ${WEATHER[weather].n}</small></span></button>
+ <h3 class="sect">12 авто-палитр</h3><p class="sub" style="margin-bottom:10px">Нажмите на любую, чтобы примерить (авто при этом выключится).</p>
+ <div class="agrid"><span></span><span class="h">День</span><span class="h">Вечер</span><span class="h">Ночь</span>
+ ${Object.keys(SEASONS).map(s=>`<span class="s">${SEASONS[s].e} ${SEASONS[s].n}</span>${['day','eve','night'].map(d=>cell(s+'-'+d)).join('')}`).join('')}</div>
+ <div class="item" style="margin-bottom:18px">${Object.entries(SEASONS).map(([k,s])=>`<div class="s" style="margin:3px 0"><b>${s.e} ${s.n}:</b> ${s.idea}</div>`).join('')}<div class="s" style="margin:3px 0"><b>🌙 Ночь:</b> тёмные тёплые версии — экран светит меньше перед сном.</div></div>
+ <h3 class="sect">Погода за окном</h3><p class="sub" style="margin-bottom:10px">Пока задаётся вручную — в iOS-версии будет определяться сама.</p>
+ <div class="seg" style="grid-template-columns:repeat(3,1fr);margin-bottom:8px">${Object.entries(WEATHER).map(([k,w])=>`<button class="${weather===k?'on':''}" onclick="setWeather('${k}')"><span class="e">${w.e}</span>${w.n}</button>`).join('')}</div>
+ <h3 class="sect">Постоянные палитры</h3>
+ ${THEMES.map(th=>`<button class="theme ${theme===th.id?'on':''}" style="background:${th.bg};color:${th.ink}" onclick="applyTheme('${th.id}');rTheme()"><div class="tp"><div class="sw">${th.sw.map(c=>`<i style="background:${c}"></i>`).join('')}</div><p class="tn">${th.n}</p></div><div class="tr">${th.r}</div></button>`).join('')}
+ <button class="btn main" onclick="go(S.movie?'result':'home')">Готово</button></div>`;
+}
+
+/* ===== АВТО-ДИЗАЙН: сезон × время суток × погода ===== */
+const K=['bg','paper','paper2','ink','mute','sub','line','acc','on-acc','acc-soft','sage','sage-soft','sage-ink','art1','art2','glowA','glowB'];
+const AUTO={
+ 'winter-day':['#f1ede8','#fffdfa','#f5f1ec','#2f2b2e','#857c80','#63595e','#e5ddd6','#b2434f','#fff','#f2d8d9','#4f7a64','#dde9e1','#2f5442','#f3eeea','#cfd6de','#f8f6f3','#e7e9ee'],
+ 'winter-eve':['#e7ddd6','#faf3ef','#f0e6e1','#2e2629','#86787c','#65565b','#dccdc5','#a53c49','#fff','#ecccce','#4a7360','#dae6dd','#2c5040','#f1dace','#c6a395','#f1e6e0','#dcc8bf'],
+ 'winter-night':['#1d1a1f','#28232a','#312b33','#f1e8ea','#a99aa0','#c8b8be','#3d3540','#e48a8f','#2a1416','#4a2b30','#8fbfa3','#263530','#b8dcc6','#43364a','#211c24','#262028','#19161b'],
+ 'spring-day':['#f0f1e8','#fcfcf7','#f3f5ec','#2f3a30','#7d8677','#5f6b5b','#dfe4d4','#5f8a62','#fff','#dde9d9','#c9737f','#f6dfe2','#8f3f4b','#f6e3e6','#c6d6b6','#f6f7ef','#e4ead8'],
+ 'spring-eve':['#ece5ea','#fbf7fa','#f3ecf1','#33292f','#877a83','#665a63','#e2d6de','#7f6fa8','#fff','#e5dff1','#c9737f','#f6dfe2','#8f3f4b','#efdde6','#c3b2d6','#f6eff4','#e2d6e2'],
+ 'spring-night':['#1b1d22','#252831','#2e323c','#e9ebf1','#9ea3b2','#c0c5d2','#3a3f4b','#b7a6e0','#1e1730','#3a3350','#e2a1ab','#3d2a2f','#f0c3ca','#3b3653','#1f212a','#22242c','#16181d'],
+ 'summer-day':['#e8eff1','#fbfdfd','#f0f5f7','#2b3a43','#7c8b94','#586873','#d7e2e8','#4e86a6','#fff','#d9e8f1','#e0915a','#f8e5d6','#9a5a2c','#fde8d6','#a9cddd','#f4f9fa','#dbe9ef'],
+ 'summer-eve':['#f3e4d6','#fff8f1','#f8ebde','#3b2c27','#8f7568','#735a4d','#ebd5c3','#d2703f','#fff','#f7d8c5','#5d93a8','#d9eaf0','#2f6478','#fbd3b0','#e39a7a','#fbeedf','#f4d4bf'],
+ 'summer-night':['#161c22','#1f2730','#27303a','#e6eef3','#92a2ad','#b7c6d0','#34404b','#f0a46f','#2a1608','#43301f','#7fb6cc','#1f3440','#b3dcec','#2f4252','#182029','#1b232b','#12171c'],
+ 'autumn-day':['#f3e8da','#fffaf2','#f6ecdf','#3e2f24','#8d7766','#765f4d','#e8d6c0','#c0622f','#fff','#f5d9c4','#a0862f','#f1e6c4','#6e5a12','#f7dfc2','#d9a77c','#f9eedf','#f0dcc4'],
+ 'autumn-eve':['#e9d8c4','#f8eee2','#f0e2d1','#3a2a1f','#87705d','#6f5745','#dcc4a8','#b3542a','#fff','#efcfb6','#96792a','#eadcb6','#66520f','#f0cba3','#c98b5e','#f3dfc6','#e2c3a2'],
+ 'autumn-night':['#211913','#2c221b','#362a21','#f3e6d6','#b09a84','#cdb69e','#46372b','#e2a462','#2a1a0e','#4b3524','#b4c398','#33392a','#c9d6b0','#57402c','#2b1f17','#2b2018','#1c1511']
+};
+(function(){let css='';for(const[id,v]of Object.entries(AUTO)){const dark=id.endsWith('night');css+=`[data-theme=${id}]{${K.map((k,i)=>`--${k}:${v[i]}`).join(';')};--shadow:${dark?'0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35)':'0 1px 2px rgba(60,45,35,.06),0 8px 24px rgba(60,45,35,.08)'}}\n`}
+ const st=document.createElement('style');st.textContent=css;document.head.appendChild(st)})();
+const SEASONS={winter:{n:'Зима',adj:'Зимний',adjF:'Зимнее',e:'❄️',idea:'молоко, клюква и хвоя — тёплые оттенки визуально «греют» в холодный сезон'},spring:{n:'Весна',adj:'Весенний',adjF:'Весеннее',e:'🌸',idea:'шалфей и цвет вишни, вечером — сиреневые сумерки'},summer:{n:'Лето',adj:'Летний',adjF:'Летнее',e:'🌊',idea:'морской туман и персик днём, золотой час вечером'},autumn:{n:'Осень',adj:'Осенний',adjF:'Осеннее',e:'🍂',idea:'тыква, корица и охра — как плед и тёплая лампа'}};
+const TODS={day:{n:'День',w:'день',wF:'утро'},eve:{n:'Вечер',w:'вечер'},night:{n:'Ночь',w:'ночь'}};
+const WEATHER={none:{e:'🙂',n:'не указано'},sun:{e:'☀️',n:'солнечно'},cloud:{e:'☁️',n:'пасмурно'},rain:{e:'🌧️',n:'дождь'},snow:{e:'❄️',n:'снег'},fog:{e:'🌫️',n:'туман'}};
+function curSeason(){const m=new Date().getMonth();return m<=1||m===11?'winter':m<=4?'spring':m<=7?'summer':'autumn'}
+function curTod(){const h=new Date().getHours();return h>=22||h<5?'night':h>=17?'eve':'day'}
+let wxState=store.get('kv_wx',{w:'none',t:0});
+let weather=(Date.now()-wxState.t<12*3600e3)?wxState.w:'none';
+function setWeather(w){weather=w;store.set('kv_wx',{w,t:Date.now()});renderFx();if(S.screen==='home')rHome();else if(S.screen==='theme')rTheme()}
+function ctxNow(){const id=theme==='auto'?curSeason()+'-'+curTod():(AUTO[theme]?theme:null);if(id){const[s,d]=id.split('-');return{season:s,tod:d}}return{season:curSeason(),tod:curTod()}}
+function ctxLabel(){const c=ctxNow();const s=SEASONS[c.season];return c.tod==='night'?`${s.e} ${s.adjF==='Летнее'?'Летняя':s.adj.replace(/ий$/,'яя')} ночь`:c.tod==='eve'?`${s.e} ${s.adj} вечер`:`${s.e} ${s.adj} день`}
+function resolvedTheme(){return theme==='auto'?curSeason()+'-'+curTod():theme}
+function isDark(){return true;const r=resolvedTheme();return r.endsWith('night')||r==='karamel'}
+function renderFx(){
+ const fx=document.getElementById('fx');if(!fx)return;const R=(a,b)=>(a+Math.random()*(b-a)).toFixed(2);const dark=isDark();
+ const root=document.documentElement.style;
+ root.setProperty('--fx-rain',dark?'rgba(190,210,235,.55)':'rgba(90,110,135,.5)');
+ root.setProperty('--fx-snow',dark?'rgba(255,255,255,.9)':'rgba(170,190,210,.9)');
+ root.setProperty('--fx-sun',dark?'rgba(255,190,110,.18)':'rgba(255,196,120,.5)');
+ root.setProperty('--fx-cloud',dark?'rgba(120,120,135,.35)':'rgba(255,255,255,.75)');
+ root.setProperty('--fx-fog',dark?'rgba(160,160,170,.18)':'rgba(255,255,255,.65)');
+ let h='';const w=weather;
+ if(w==='rain')h=Array.from({length:55},()=>`<i class="drop" style="left:${R(0,115)}%;animation-duration:${R(.55,.95)}s;animation-delay:-${R(0,1)}s;opacity:${R(.25,.6)}"></i>`).join('');
+ if(w==='snow')h=Array.from({length:45},()=>{const s=R(3,8);return `<i class="flake" style="left:${R(-5,100)}%;width:${s}px;height:${s}px;animation-duration:${R(7,16)}s;animation-delay:-${R(0,16)}s;opacity:${R(.5,1)}"></i>`}).join('');
+ if(w==='sun')h=`<div class="sunglow"></div>`;
+ if(w==='cloud')h=[0,1,2,3].map(i=>`<div class="cloud" style="top:${R(-5,60)}%;width:${R(260,420)}px;animation-duration:${R(45,80)}s;animation-delay:-${R(0,60)}s"></div>`).join('');
+ if(w==='fog')h=[0,1,2].map(i=>`<div class="fogband" style="top:${20+i*28}%;animation-duration:${R(18,30)}s"></div>`).join('');
+ if(dark&&(w==='none'||w==='sun'))h+=Array.from({length:40},()=>`<i class="star" style="left:${R(0,100)}%;top:${R(0,60)}%;animation-duration:${R(2,5)}s;animation-delay:-${R(0,5)}s;opacity:${R(.3,.9)}"></i>`).join('');
+ fx.innerHTML=h;
+}
+/* контекст влияет на подбор */
+function ctxBoost(kind,x){
+ const c=ctxNow();let b=0;const hot=['mulled','mulled0','cocoa','masala','matcha','nastoika'];const cold=['lemonade','mojito','mojito0','rose','aperol','beer','prosecco','cola','sangria'];
+ if(kind==='f'||kind==='d'){
+  if(c.season==='winter'||c.season==='autumn'){if(x.c.includes('comfort'))b+=2;if(x.c.includes('festive')&&c.season==='winter')b+=1;if(x.id==='pumpkin'&&c.season==='autumn')b+=3}
+  if(c.season==='summer'){if(x.c.includes('light')||x.c.includes('mediterranean'))b+=2;if(x.id==='icecream')b+=3}
+  if(c.season==='spring'&&x.c.includes('light'))b+=1;
+  if(weather==='rain'||weather==='snow'||weather==='fog'){if(x.c.includes('comfort'))b+=2}
+  if(c.tod==='night'&&kind==='f'){if(x.cook&&x.cook>25&&cooking())b-=5;if(!x.cook||x.cook<=20)b+=1}
+ }
+ if(kind==='r'){
+  if(c.season==='winter'||c.season==='autumn'||weather==='rain'||weather==='snow'){if(hot.includes(x.id))b+=3;if(['lemonade','mojito','mojito0','aperol','cola'].includes(x.id))b-=2}
+  if(c.season==='summer'&&weather!=='rain'){if(cold.includes(x.id))b+=3;if(['mulled','mulled0','cocoa','masala'].includes(x.id))b-=5}
+  if(c.season==='spring'&&['prosecco','rose','matcha','lemonade','nzero'].includes(x.id))b+=2;
+ }
+ if(kind==='m'){if((weather==='rain'||weather==='snow')&&x.m.includes('cozy'))b+=2;if(c.tod==='night'&&x.r>140)b-=3}
+ return b;
+}
+function ctxWhy(){const c=ctxNow();const p=[];const s=SEASONS[c.season];p.push(s.n.toLowerCase());if(weather!=='none')p.push(WEATHER[weather].n);if(c.tod==='night')p.push('поздний час');if(profs.length)p.push(profs.length>1?'ваши два абонемента':'ваш абонемент');return 'Учли: '+p.join(', ')}
+
+const MB={cozy:'УЮТНО',fun:'СМЕШНО',romance:'РОМАНТИКА',thrill:'СТРАШНО',action:'ДРАЙВ',deep:'ПОДУМАТЬ',touching:'ДО СЛЁЗ',wonder:'ВОЛШЕБСТВО',nostalgia:'НОСТАЛЬГИЯ'};
+
+const MART={
+ cozy:{bg:'#e3c590',lc:'#2b0b12',s:'<circle cx="50" cy="44" r="30" fill="#c4572e"/><circle cx="50" cy="44" r="18" fill="#f3e2c2"/><path d="M0 92 V70 h18 v-8 l8-6 l8 6 v8 h16 V64 a12 12 0 0 1 24 0 V92 Z" fill="#2b0b12"/>'},
+ fun:{bg:'#e7cfa3',lc:'#2b0b12',s:'<g transform="translate(50 60)"><path d="M0 0 L-60 -40 L-50 -60 Z M0 0 L-30 -70 L-10 -72 Z M0 0 L10 -72 L30 -70 Z M0 0 L50 -60 L60 -40 Z" fill="#e0913a"/></g><circle cx="50" cy="60" r="14" fill="#2e4a6b"/><rect y="74" width="100" height="18" fill="#2b0b12"/>'},
+ romance:{bg:'#ecd8b2',lc:'#2b0b12',s:'<circle cx="38" cy="40" r="20" fill="#7a2e3a"/><circle cx="62" cy="40" r="20" fill="#d79a3a" opacity=".9"/><path d="M0 92 V72 h100 V92 Z" fill="#2b0b12"/><circle cx="20" cy="16" r="2" fill="#2b0b12"/><circle cx="84" cy="14" r="2" fill="#2b0b12"/>'},
+ thrill:{bg:'#2a2630',lc:'#e9d9b6',s:'<circle cx="70" cy="26" r="14" fill="#e9d9b6"/><circle cx="64" cy="22" r="12" fill="#2a2630"/><path d="M0 92 V60 l14-20 l6 14 l10-26 l12 32 l8-10 l12 22 V92 Z" fill="#120c10"/>'},
+ action:{bg:'#e5c99a',lc:'#2b0b12',s:'<path d="M0 30 L100 12 V24 L0 42 Z" fill="#b5532a"/><path d="M0 50 L100 32 V40 L0 58 Z" fill="#3f6b4a"/><path d="M0 92 V74 h100 V92 Z" fill="#2b0b12"/>'},
+ deep:{bg:'#dcc29a',lc:'#2b0b12',s:'<rect x="22" y="14" width="56" height="56" fill="none" stroke="#5a3a6b" stroke-width="6"/><rect x="36" y="28" width="28" height="28" fill="#e0913a"/><path d="M0 92 V78 h100 V92 Z" fill="#2b0b12"/>'},
+ touching:{bg:'#e8d0a0',lc:'#2b0b12',s:'<path d="M50 14 C58 30 66 38 66 50 a16 16 0 0 1 -32 0 C34 38 42 30 50 14 Z" fill="#2b3a5a"/><path d="M0 92 V76 h100 V92 Z" fill="#2b0b12"/>'},
+ wonder:{bg:'#2e2a4a',lc:'#e9d9b6',s:'<path d="M50 18 l5 14 l14 5 l-14 5 l-5 14 l-5 -14 l-14 -5 l14 -5 Z" fill="#e8b04a"/><circle cx="20" cy="20" r="2" fill="#e9d9b6"/><circle cx="80" cy="30" r="2" fill="#e9d9b6"/><circle cx="26" cy="58" r="1.5" fill="#e9d9b6"/><path d="M0 92 V76 h100 V92 Z" fill="#14112a"/>'},
+ nostalgia:{bg:'#d9b98a',lc:'#2b0b12',s:'<rect x="18" y="22" width="64" height="40" rx="4" fill="none" stroke="#7a2e3a" stroke-width="5"/><circle cx="38" cy="42" r="7" fill="#7a2e3a"/><circle cx="62" cy="42" r="7" fill="#7a2e3a"/><path d="M0 92 V76 h100 V92 Z" fill="#2b0b12"/>'}
+};
+function moodPoster(k){const a=MART[k],on=S.moods.includes(k);return `<button class="mp ${on?'on':''}" aria-pressed="${on}" onclick="tMood('${k}')"><span class="pc" style="background:${a.bg}"><svg viewBox="0 0 100 92" aria-hidden="true"><rect width="100" height="92" fill="${a.bg}"/>${a.s}</svg><span class="pl" style="color:${a.lc}">${MB[k]}</span></span></button>`}
+
+function bulbs(){return '<div class="bulbs x" style="top:6px"></div><div class="bulbs x chase" style="top:6px"></div><div class="bulbs x" style="bottom:6px"></div><div class="bulbs x chase" style="bottom:6px"></div>'}
+function bulbsY(){return '<div class="bulbs y" style="left:4px"></div><div class="bulbs y chase" style="left:4px"></div><div class="bulbs y" style="right:4px"></div><div class="bulbs y chase" style="right:4px"></div>'}
+const IC={user:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>',back:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>',re:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>',arch:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 0 0 4v5h18v-5a2 2 0 0 0 0-4V5H3z"/><path d="M14 5v12" stroke-dasharray="2 2"/></svg>'};
+const PAL=[['#e3c590','#c4572e','#e9d2a6','#2e6b5e'],['#e7cfa3','#2e4a6b','#e9d9b6','#c4572e'],['#d9b98a','#7a2e3a','#ecd8b2','#d79a3a'],['#e5c99a','#3f6b4a','#efdcb8','#b5532a'],['#dcc29a','#5a3a6b','#eedcb9','#e0913a'],['#e8d0a0','#a8452a','#f1e0bf','#2b3a5a']];
+function hsh(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h}
+function posterArt(m){const h=hsh(m.t),p=PAL[h%PAL.length],v=(h>>3)%3;let a='';
+ if(v===0)a=`<circle cx="157" cy="92" r="74" fill="${p[1]}"/><circle cx="157" cy="92" r="54" fill="${p[2]}"/><circle cx="157" cy="92" r="34" fill="${p[3]}"/>`;
+ else if(v===1){a=`<g transform="translate(157 120)">`+Array.from({length:12},(_,i)=>`<path d="M0 0 L${Math.cos((i*15-180)*Math.PI/180)*220} ${Math.sin((i*15-180)*Math.PI/180)*220} L${Math.cos(((i*15+7.5)-180)*Math.PI/180)*220} ${Math.sin(((i*15+7.5)-180)*Math.PI/180)*220} Z" fill="${p[1]}"/>`).join('')+`</g><circle cx="157" cy="120" r="40" fill="${p[3]}"/>`}
+ else a=`<rect x="0" y="40" width="314" height="26" fill="${p[1]}"/><rect x="0" y="74" width="314" height="18" fill="${p[3]}"/><rect x="0" y="100" width="314" height="10" fill="${p[1]}"/><circle cx="230" cy="40" r="26" fill="${p[2]}"/>`;
+ const city=`<path d="M0 190 V150 h24 v-14 l12-10 l12 10 v14 h22 V142 h16 l6-12 l6 12 v60 Z M98 190 V146 a26 26 0 0 1 52 0 V190 Z M150 190 V156 h24 V140 h22 v16 h30 V190 Z M226 190 V150 h18 V132 l14-12 l14 12 v18 h42 V190 Z" fill="#2b0b12"/>`;
+ return `<svg viewBox="0 0 314 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="314" height="190" fill="${p[0]}"/>${a}${city}<circle cx="40" cy="26" r="2.5" fill="#2b0b12"/><circle cx="276" cy="30" r="2.5" fill="#2b0b12"/></svg>`}
+function dateRu(){return new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}
+
+function art(e){return `<div class="art"><span class="blur">${e}</span><span class="g1">${e}</span><span class="g2">${e}</span><span class="hero">${e}</span></div>`}
+
+const $=s=>document.querySelector(s);
+const app=$('#app');
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2200)}
+function hue(str){let h=0;for(const ch of str)h=(h*31+ch.charCodeAt(0))%360;return h}
+function fmtTime(m){const h=Math.floor(m/60),mm=m%60;return ((h?h+' ч ':'')+(mm?mm+' мин':'')).trim()}
+const overlap=(a,b)=>a.filter(x=>b.includes(x)).length;
+const cooking=()=>S.food!=='order';
+
+
+
+/* ===== АНКЕТА ЗРИТЕЛЯ ===== */
+const QUIZ=[
+ {k:'thrill',q:'Идеальные выходные — это…',o:['Дом, плед и всё знакомое','Новое место, но без экстрима','То, от чего захватывает дух']},
+ {k:'dark',q:'Фильмы ужасов',o:['Не смотрю — потом не усну','Если не слишком жутко','Чем страшнее, тем лучше']},
+ {k:'cerebral',q:'После фильма хочется…',o:['Просто выдохнуть','Немного обсудить','Спорить полночи о смысле']},
+ {k:'aesthetic',q:'Авторское кино, субтитры, необычные истории',o:['Не моё','Иногда интересно','Это и есть настоящее кино']},
+ {k:'touching',q:'Поплакать над фильмом',o:['Избегаю грустного','Если история того стоит','Люблю, это очищает']},
+ {k:'communal',q:'Лёгкие комедии и романтика',o:['Скучно и предсказуемо','Под настроение','Лучший вечерний жанр']},
+ {k:'nostalgia',q:'Старое кино и советская классика',o:['Не моё','Иногда, по праздникам','Пересматриваю с удовольствием']},
+ {k:'neo',q:'В меню незнакомое блюдо…',o:['Возьму проверенное','Попробую у кого-то из тарелки','Закажу именно его']},
+ {k:'spicy',q:'Острая еда',o:['Совсем нет','Чуть-чуть, для аромата','Огонь — чем острее, тем лучше']},
+ {k:'cook',q:'Готовить вечером',o:['Лучше закажем','Если быстро — да','Люблю готовить']},
+ {k:'diet',q:'Чего вы не едите и не пьёте?',multi:[['meat','Мясо'],['pork','Свинину'],['fish','Рыбу и морепродукты'],['alc','Алкоголь']]}
+];
+const MEAT=['carbonara','meatballs','lasagna','quiche','croque','bourguignon','bliny','ramen','wok','kchicken','dumplings','burger','wings','friedchicken','hotdog','steak','tacos','burrito','quesadilla','cuban','khinkali','shashlik','olivier','pelmeni','borsch','shawarma','plov','tikka','gyros','popcorn','nuggets'];
+const PORK=['carbonara','lasagna','quiche','croque','bourguignon','bliny','dumplings','hotdog','cuban','khinkali','shashlik','olivier','pelmeni','gyros','popcorn','borsch'];
+const FISH=['sushi','onigiri','shrimp','paella','poke','olivier'];
+const SPICY=['kchicken','tikka','chana','nachos','wings','burrito','shawarma','tacos'];
+const EXOTIC=['indian','japanese','asian','eastern','mexican'];
+let profs=store.get('kv_prof',[]);
+function P(){if(!profs.length)return null;const keys=['thrill','dark','cerebral','aesthetic','touching','communal','nostalgia','neo','spicy','cook'];const o={};keys.forEach(k=>o[k]=profs.reduce((a,p)=>a+(p[k]??.5),0)/profs.length);o.diet=[...new Set(profs.flatMap(p=>p.diet||[]))];return o}
+function dietOk(f){const p=P();if(!p)return true;const d=p.diet;if(d.includes('meat')&&(MEAT.includes(f.id)||FISH.includes(f.id)&&d.includes('fish')))return false;if(d.includes('meat')&&MEAT.includes(f.id))return false;if(d.includes('pork')&&PORK.includes(f.id))return false;if(d.includes('fish')&&FISH.includes(f.id))return false;return true}
+function profMovie(m){const p=P();if(!p)return 0;let b=0;const has=x=>m.m.includes(x);
+ if(has('thrill')||has('action'))b+=6*(p.thrill-.5);
+ if(m.g==='ужасы')b+=p.dark<.3?-9:6*(p.dark-.5);
+ if(has('deep'))b+=6*(p.cerebral-.5);
+ const foreign=m.o&&!m.c.includes('american')&&!m.c.includes('russian')&&!m.c.includes('georgian');if(foreign)b+=6*(p.aesthetic-.5);
+ if(has('touching'))b+=6*(p.touching-.5);
+ if(has('romance')||has('fun'))b+=5*(p.communal-.5);
+ if(has('nostalgia')||m.y<1990)b+=6*(p.nostalgia-.5);
+ return b}
+function profFood(key,x){const p=P();if(!p||key==='r')return 0;let b=0;
+ if(x.c.some(c=>EXOTIC.includes(c)))b+=p.neo<.35?-4:p.neo>.7?2:0;
+ if(SPICY.includes(x.id))b+=p.spicy<.25?-10:p.spicy>.75?3:0;
+ if(key==='f'&&x.cook&&cooking()){b+=p.cook<.3&&x.cook>25?-3:0}
+ return b}
+function archetype(p){const m={thrill:['Искатель острых ощущений','адреналин, погони, мурашки'],cerebral:['Киноинтеллектуал','кино, о котором спорят'],aesthetic:['Ценитель авторского кино','необычные истории и красота кадра'],touching:['Чуткое сердце','истории, которые трогают'],communal:['Душа компании','лёгкое, тёплое, про людей'],nostalgia:['Хранитель классики','старое доброе кино']};
+ const top=Object.keys(m).sort((a,b)=>(p[b]+(b==='thrill'?p.dark*.3:0))-(p[a]+(a==='thrill'?p.dark*.3:0)))[0];
+ const food=p.neo>.65?'гастро-исследователь':p.neo<.35?'верен проверенным блюдам':'открыт новому без фанатизма';
+ return {n:m[top][0],d:m[top][1],food}}
+S.quiz={i:0,ans:{},sel:[]};
+function startQuiz(){S.quiz={i:0,ans:{},sel:[]};go('quiz')}
+function rQuizIntro(){
+ app.innerHTML=header()+`<div class="fade">
+ <div class="marquee">${bulbs()}<p class="mq-k">ДОБРО ПОЖАЛОВАТЬ</p><h1 class="mq-t" style="font-size:36px">АНКЕТА ЗРИТЕЛЯ</h1><p class="mq-s">11 коротких вопросов · около минуты</p></div>
+ <div class="ticket" style="margin-top:18px"><div class="tb"><div class="tn">ЗАЧЕМ ЭТО</div><div class="ts" style="font-size:14px;line-height:1.5">Ответы помогут подбирать фильмы и ужин именно под вас: сколько адреналина, драмы и авторского кино вы любите, насколько смелы в еде и что не едите.</div></div><div class="tside">1 МИН</div></div>
+ <button class="btn main" onclick="startQuiz()">ЗАПОЛНИТЬ АНКЕТУ</button>
+ <button class="btn ghost" onclick="skipQuiz()">ПОЗЖЕ</button>
+ <p class="qnote">Вопросы составлены по мотивам исследований вкусов в развлечениях (Rentfrow и соавт., 2011), шкалы поиска ощущений и шкалы пищевой неофобии. Это не психологический тест, а настройка подбора. Ответы хранятся только на этом телефоне.</p></div>`;
+}
+function skipQuiz(){store.set('kv_quiz_skip',1);go('home')}
+function rQuiz(){
+ const z=S.quiz,q=QUIZ[z.i],n=QUIZ.length,who=profs.length+1;
+ const strip=`<div class="prog-strip">${QUIZ.map((_,i)=>`<i class="${i<=z.i?'on':''}"></i>`).join('')}</div>`;
+ let body;
+ if(q.multi){body=`<div class="chips">${q.multi.map(([v,l])=>`<button class="opt ${z.sel.includes(v)?'on':''}" style="min-height:46px;font-size:16px" onclick="tDiet('${v}')">${l}</button>`).join('')}</div>
+  <button class="btn main" onclick="ansDiet()">${z.sel.length?'ГОТОВО':'ЕМ И ПЬЮ ВСЁ'}</button>`}
+ else body=`<div class="qopts">${q.o.map((o,i)=>`<button class="qo" onclick="ans(${i})"><b>${['А','Б','В'][i]}</b>${o}</button>`).join('')}</div>`;
+ app.innerHTML=header()+`<div class="fade"><button class="back" onclick="${z.i?'S.quiz.i--;rQuiz()':`go('home')`}">${IC.back} ${z.i?'НАЗАД':'ВЫЙТИ'}</button>
+ ${strip}<div class="qcard">${bulbs()}<p class="qn">${profs.length?'ЗРИТЕЛЬ '+who+' · ':''}ВОПРОС ${z.i+1} ИЗ ${n}</p><h2 class="qq">${q.q}</h2></div>${body}</div>`;
+}
+function ans(i){const z=S.quiz;z.ans[QUIZ[z.i].k]=i/2;z.i++;rQuiz();window.scrollTo(0,0)}
+function tDiet(v){const s=S.quiz.sel;const i=s.indexOf(v);if(i>=0)s.splice(i,1);else s.push(v);rQuiz()}
+function ansDiet(){const z=S.quiz;const p={...z.ans,diet:[...z.sel]};profs.push(p);profs=profs.slice(-2);store.set('kv_prof',profs);applyProfDefaults();go('profile')}
+function applyProfDefaults(){const p=P();if(!p)return;S.food=p.cook<.3?'order':p.cook>.7?'cook':'any';if(p.diet.includes('alc'))S.drink='soft'}
+function rProfile(){
+ const lbl={thrill:'АДРЕНАЛИН',dark:'УЖАСЫ',cerebral:'ПОДУМАТЬ',aesthetic:'АВТОРСКОЕ',touching:'ДРАМА',communal:'ЛЁГКОЕ',nostalgia:'КЛАССИКА',neo:'НОВОЕ В ЕДЕ',spicy:'ОСТРОЕ'};
+ const dl={meat:'без мяса',pork:'без свинины',fish:'без рыбы',alc:'без алкоголя'};
+ const card=(p,i)=>{const a=archetype(p);return `<div class="abon"><div class="ab"><div class="ak">АБОНЕМЕНТ · ЗРИТЕЛЬ ${i+1}</div><div class="an">${a.n}</div><div class="af">${a.d}; в еде — ${a.food}</div>
+ <div class="bars">${Object.keys(lbl).map(k=>`<div class="bar"><span>${lbl[k]}</span><i><b style="width:${Math.round((p[k]??.5)*100)}%"></b></i></div>`).join('')}</div>
+ ${p.diet&&p.diet.length?`<div class="dietl">Учитываем: ${p.diet.map(d=>dl[d]).join(', ')}</div>`:''}</div><div class="side"><span>№ 000${i+1}</span></div></div>`};
+ app.innerHTML=header()+`<div class="fade"><button class="back" onclick="go('home')">${IC.back} В ПРОГРАММУ</button>
+ <div class="marquee">${bulbs()}<p class="mq-k">ВАШ</p><h1 class="mq-t" style="font-size:36px">${profs.length>1?'ПАРНЫЙ АБОНЕМЕНТ':'АБОНЕМЕНТ'}</h1><p class="mq-s">${profs.length?'подбор настроен под '+(profs.length>1?'вас обоих':'вас'):'анкета ещё не заполнена'}</p></div>
+ <div style="margin-top:16px">${profs.map(card).join('')}</div>
+ ${profs.length<2?`<button class="btn ghost" onclick="startQuiz()">${profs.length?'ДОБАВИТЬ ВТОРОГО ЗРИТЕЛЯ':'ЗАПОЛНИТЬ АНКЕТУ'}</button>`:''}
+ ${profs.length?`<button class="btn ghost" onclick="resetProfiles()">ПРОЙТИ ЗАНОВО</button>`:''}
+ <button class="btn main" onclick="go('home')">В ЗАЛ</button>
+ <p class="qnote">Анкета — по мотивам научных шкал, а не диагностика. Для пары фильмы подбираются по среднему вкусу, а ограничения в еде учитываются у обоих.</p></div>`;
+}
+function resetProfiles(){profs=[];store.set('kv_prof',[]);startQuiz()}
+
+/* ===== ЗАНАВЕС ===== */
+let cur={timers:[],cb:null,raf:0};
+function skipCurtain(){cur.timers.forEach(clearTimeout);cancelAnimationFrame(cur.raf);const el=document.getElementById('curtain');if(cur.cb){const c=cur.cb;cur.cb=null;c()}el.className='show';requestAnimationFrame(()=>{el.className='show opening'});setTimeout(()=>{el.className=''},700)}
+function playCurtain(cb){
+ const el=document.getElementById('curtain');
+ let reduce=false;try{reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+ if(reduce||!el){cb();return}
+ cur.cb=cb;cur.timers=[];const T=(fn,ms)=>cur.timers.push(setTimeout(fn,ms));
+ const lead=el.querySelector('.lead'),num=el.querySelector('.num');
+ el.className='show';
+ requestAnimationFrame(()=>{el.className='show dark'});
+ T(()=>{el.className='show dark closed'},350);
+ T(()=>{el.className='show dark closed count';let n=3;num.textContent=n;const t0=performance.now();
+   const tick=(now)=>{const p=((now-t0)%420)/420;lead.style.setProperty('--sw',(p*360)+'deg');const k=3-Math.floor((now-t0)/420);if(k>=1&&num.textContent!=String(k))num.textContent=k;if(now-t0<1260)cur.raf=requestAnimationFrame(tick)};cur.raf=requestAnimationFrame(tick)},1050);
+ T(()=>{if(cur.cb){const c=cur.cb;cur.cb=null;c()}el.className='show dark closed';},2330);
+ T(()=>{el.className='show opening'},2480);
+ T(()=>{el.className=''},3650);
+}
+
+/* ===== ПОДБОР ===== */
+function pickMovie(){
+ const maxR=S.time==='short'?105:S.time==='mid'?135:999;
+ const base=m=>m.r<=maxR&&(S.who!=='kids'||m.k)&&!seen.has(m.t)&&m.m.some(x=>S.moods.includes(x));
+ let pool=MOVIES.filter(m=>base(m)&&!S.shown.m.has(m.t));
+ if(!pool.length){S.shown.m.clear();pool=MOVIES.filter(base)}
+ if(!pool.length)return null;
+ const sc=pool.map(m=>{let s=overlap(m.m,S.moods)*10+Math.random()*7+ctxBoost('m',m)+profMovie(m);if(S.who==='friends'&&(m.m.includes('fun')||m.m.includes('action')))s+=2;if(S.who==='pair'&&m.m.includes('romance'))s+=1;return{m,s}}).sort((a,b)=>b.s-a.s);
+ const mv=sc[0].m;S.shown.m.add(mv.t);return mv;
+}
+function pickFrom(list,key,okFn,favId,favKey,extra){
+ const mv=S.movie;
+ let pool=list.filter(x=>okFn(x)&&!S.shown[key].has(x.id));
+ if(!pool.length){S.shown[key].clear();pool=list.filter(okFn)}
+ const sc=pool.map(x=>{let s=overlap(x.c,mv.c)*4+(x.m?overlap(x.m,S.moods)*2:0)+Math.random()*3+(extra?extra(x):0)+ctxBoost(key,x)+profFood(key,x);if(!S.fav[favKey]&&favId===x.id)s+=50;return{x,s}}).sort((a,b)=>b.s-a.s);
+ const it=sc[0].x;S.shown[key].add(it.id);
+ let why;
+ if(!S.fav[favKey]&&favId===it.id){why=favKey==='f'?mv.fn:favKey==='r'?mv.drn:mv.dn;S.fav[favKey]=true}
+ else{const cm=mv.c.find(c=>it.c.includes(c));if(cm)why=whyFor(key,cm);else{const md=it.m&&S.moods.find(x=>it.m.includes(x));why=md?'Под настроение «'+MOODS[md].n.toLowerCase()+'».':'Хорошо ложится к этому вечеру.'}}
+ return{...it,why};
+}
+function pickMain(){return pickFrom(FOODS,'f',f=>dietOk(f)&&(S.food==='cook'?f.cook>0:S.food==='order'?f.ord:true),S.movie.fav,'f',f=>(f.cook>=90&&cooking()?(S.time==='any'?-4:-15):0))}
+function pickDess(){
+ const ok=d=>S.food==='cook'?(d.cook>0||d.buy):S.food==='order'?(d.ord||d.buy):true;
+ return pickFrom(DESSERTS,'d',ok,S.movie.dfav,'d',d=>S.main?overlap(d.c,S.main.c)*2:0);
+}
+function pickDrink(){
+ const kids=S.who==='kids';
+ const noalc=P()&&P().diet.includes('alc');const ok=d=>S.drink==='soft'||kids||noalc?!d.a:S.drink==='alc'?!!d.a:true;
+ return pickFrom(DRINKS,'r',ok,S.movie.drf,'r',d=>S.main?overlap(d.c,S.main.c)*3:0);
+}
+
+/* ===== ССЫЛКИ НА ДОСТАВКУ ===== */
+function orderLinks(it){
+ const q=encodeURIComponent(it.q||it.n);
+ return `<a class="order-link" href="https://eda.yandex.ru/search?query=${q}" target="_blank" rel="noopener"><span><b>Найти «${it.q||it.n}» в Яндекс Еде</b><small>в приложении отсортируйте по рейтингу</small></span><span class="arr">→</span></a>
+ <a class="order-link" href="https://yandex.ru/maps/213/moscow/?text=${q}" target="_blank" rel="noopener"><span><b>Лучшие места на Яндекс Картах</b><small>рейтинг и отзывы по блюду рядом с вами</small></span><span class="arr">→</span></a>`;
+}
+
+/* ===== СПИСОК ПОКУПОК ===== */
+function shopItems(){
+ const items=[];
+ if(S.main&&S.main.ing&&S.main.cook&&cooking())S.main.ing.forEach(i=>items.push(i));
+ if(S.dess&&S.dess.ing&&(S.dess.cook||S.dess.buy)&&cooking())S.dess.ing.forEach(i=>items.push(i));
+ else if(S.dess&&S.dess.buy&&!S.dess.ing&&cooking())items.push([S.dess.n+' (готовый)','','b']);
+ if(S.drk&&S.drk.ing)S.drk.ing.forEach(i=>items.push(i));
+ const merged={};items.forEach(([n,q,c])=>{const k=n.toLowerCase();if(merged[k]){if(q&&!merged[k][1].includes(q))merged[k][1]+=(merged[k][1]?' + ':'')+q}else merged[k]=[n,q,c]});
+ return Object.values(merged);
+}
+function rShop(){
+ const items=shopItems();if(!items.length)return '<div class="empty">Готовить ничего не нужно — всё заказываем</div>';
+ const order=['m','v','d','b','g','x','p'];
+ return order.filter(c=>items.some(i=>i[2]===c)).map(c=>`<div class="shop-group"><h4>${CAT[c]}</h4>${items.filter(i=>i[2]===c).map(([n,q])=>{const k=n;const done=S.checked.has(k);return `<div class="shop-item ${done?'done':''}" onclick="toggleItem(this,'${k.replace(/'/g,"\\'")}')"><span class="box">${done?'✓':''}</span><span class="t">${n}</span><span class="q">${q}</span></div>`}).join('')}</div>`).join('')+
+ `<button class="pbtn" onclick="copyShop()">СКОПИРОВАТЬ СПИСОК</button>`;
+}
+function toggleItem(el,k){if(S.checked.has(k))S.checked.delete(k);else S.checked.add(k);el.classList.toggle('done');el.querySelector('.box').textContent=S.checked.has(k)?'✓':''}
+async function copyShop(){const items=shopItems().filter(i=>i[2]!=='p');const t='Купить к вечеру «'+S.movie.t+'»:\n'+items.map(([n,q])=>'— '+n+(q?' — '+q:'')).join('\n');try{await navigator.clipboard.writeText(t);toast('Список скопирован — отправьте в чат')}catch(e){toast('Не получилось скопировать')}}
+
+/* ===== ЭКРАНЫ ===== */
+function header(){return `<div class="top"><div class="brand">КИНО · УЖИН</div><div style="display:flex;gap:6px"><button class="icon-btn" onclick="go('profile')" aria-label="Абонемент">${IC.user} ${profs.length?(profs.length>1?'ДВОЕ':'Я'):'АНКЕТА'}</button><button class="icon-btn" onclick="go('history')" aria-label="Архив сеансов">${IC.arch} ${hist.length||'АРХИВ'}</button></div></div>`}
+function rHome(){
+ const c=ctxNow();const greet=c.tod==='night'?'ночной сеанс':c.tod==='eve'?'вечерний сеанс':'дневной сеанс';
+ const sel=S.moods.length?S.moods.map(m=>MB[m]).join(' + '):'';
+ app.innerHTML=header()+`<div class="fade">
+ <p class="hk">СКОРО НА ЭКРАНЕ</p><h1 class="hh">ВЫБЕРИТЕ АФИШУ</h1><p class="hs">${dateRu()}, ${greet}. Можно выбрать две.</p>
+ <div class="mgrid">${Object.keys(MOODS).map(moodPoster).join('')}</div>
+ <button class="sur" onclick="surprise()">СЕАНС-СЮРПРИЗ</button>
+ <p class="label" style="margin-top:18px">ЗА ОКНОМ</p>
+ <div class="wxrow">${['sun','cloud','rain','snow','fog'].map(w=>`<button class="opt ${weather===w?'on':''}" onclick="setWeather(weather==='${w}'?'none':'${w}')">${WEATHER[w].n}</button>`).join('')}</div>
+ <button class="btn main" ${S.moods.length?'':'disabled'} onclick="go('details')">${sel?'НАЧАТЬ СЕАНС':'ВЫБЕРИТЕ АФИШУ'}</button></div>`;
+}
+function tMood(k){const i=S.moods.indexOf(k);if(i>=0)S.moods.splice(i,1);else{if(S.moods.length>=2)S.moods.shift();S.moods.push(k)}rHome()}
+function surprise(){const ks=Object.keys(MOODS);S.moods=[ks[Math.floor(Math.random()*ks.length)]];go('details')}
+function seg(key,opts){return `<div class="opts">${opts.map(([v,e,n])=>`<button class="opt ${S[key]===v?'on':''}" onclick="S['${key}']='${v}';rDetails()">${n}</button>`).join('')}</div>`}
+function rDetails(){
+ app.innerHTML=header()+`<div class="fade"><button class="back" onclick="go('home')">${IC.back} ${S.moods.map(m=>MB[m]).join(' + ')}</button>
+ <div class="marquee">${bulbs()}<p class="mq-k">ОФОРМЛЯЕМ</p><h1 class="mq-t" style="font-size:36px">БИЛЕТЫ</h1><p class="mq-s">чтобы не начать трёхчасовую драму в 23:00</p></div>
+ <div class="stubs" style="margin-top:18px">
+  <div class="stub"><div class="k">ЗРИТЕЛИ</div>${seg('who',[['pair','','Двое'],['friends','','Компания'],['kids','','С детьми']])}</div>
+  <div class="stub"><div class="k">СЕАНС</div>${seg('time',[['short','','до 1,5 ч'],['mid','','до 2 ч'],['any','','без лимита']])}</div>
+  <div class="stub"><div class="k">БУФЕТ</div>${seg('food',[['cook','','готовим'],['order','','заказ'],['any','','всё равно']])}</div>
+  <div class="stub"><div class="k">БАР</div>${seg('drink',[['alc','','с градусом'],['soft','','без'],['any','','всё равно']])}</div>
+ </div>
+ <button class="btn main" onclick="start()">НАЧАТЬ СЕАНС</button></div>`;
+}
+function start(){Object.values(S.shown).forEach(s=>s.clear());S.movie=pickMovie();if(!S.movie){toast('Под эти условия ничего не нашлось — смягчите фильтры');return}newMenu();playCurtain(()=>go('result'))}
+function newMenu(){S.fav={};S.checked.clear();S.main=pickMain();S.dess=pickDess();S.drk=pickDrink();S.tab=(S.main.cook&&cooking())?'recipe':'order'}
+
+function course(k,label,it,meta){return `<div class="course"><div class="ct"><div class="k">${label}</div><div class="n">${it.n}</div>${meta?`<div class="m">${meta}</div>`:''}<div class="w">${it.why}</div></div><button class="re" onclick="re('${k}')" aria-label="Заменить: ${label.toLowerCase()}">${IC.re}</button></div>`}
+function mainMeta(f){const a=[];if(f.cook&&cooking())a.push(fmtTime(f.cook).toUpperCase());if(f.ord&&S.food!=='cook')a.push('ДОСТАВКА');return a.join(' · ')}
+function dessMeta(d){const a=[];if(d.cook&&cooking())a.push(fmtTime(d.cook).toUpperCase()+(d.chill||d.id==='tiramisu'?' + 3 Ч ХОЛОД':''));if(d.buy)a.push('КУПИТЬ ГОТОВЫМ');if(d.ord&&S.food!=='cook')a.push('ДОСТАВКА');return a.join(' · ')}
+function rPane(){
+ const f=S.main,d=S.dess,r=S.drk;
+ if(S.tab==='recipe'){
+  let h='';
+  h+=`<p><b>${f.n}.</b> ${f.how}</p>`;
+  h+=`<p><b>${d.n}.</b> ${d.how}</p>`;
+  h+=`<p><b>${r.n}.</b> ${r.how}</p>`;
+  return `<div class="how">${h}</div>`;
+ }
+ if(S.tab==='shop')return rShop();
+ let h='';
+ if(f.ord)h+=`<div class="osub">ОСНОВНОЕ</div>`+orderLinks(f);
+ if(d.ord)h+=`<div class="osub" style="margin-top:14px">ДЕСЕРТ</div>`+orderLinks(d);
+ if(!h)h='<div class="empty">Это меню готовится дома — доставка не нужна</div>';
+ else h+='<div class="note">Яндекс Еда не даёт сторонним приложениям доступ к рейтингам, поэтому открываем поиск по блюду — сортировку «по рейтингу» выберите в фильтрах.</div>';
+ return h;
+}
+function rResult(){
+ const m=S.movie;
+ const tabs=[['recipe','ПОДАЧА'],['shop','ПРОДУКТЫ'],['order','ЗАКАЗ']];
+ app.innerHTML=header()+`<div class="fade">
+ <button class="back" onclick="go('home')">${IC.back} ПРОГРАММА</button>
+ <div class="marquee" style="padding:14px">${bulbsY()}<div class="flick"></div><div class="sprk l"></div><div class="sprk r"></div>
+  <div class="poster">${posterArt(m)}<div class="pt"><p class="pk">${m.y} · ${fmtTime(m.r).toUpperCase()} · ${m.g.toUpperCase()}</p><h2 style="font-size:${Math.min(40,Math.floor(265/(Math.max(...m.t.split(/\s+/).map(w=>w.length))*0.7)))}px;overflow-wrap:anywhere">${m.t}</h2>${m.o?`<p class="po">${m.o}</p>`:''}<p class="pd">${m.d}</p><p class="pm">ПОД ВАШЕ: ${m.m.filter(x=>S.moods.includes(x)).map(x=>MB[x]).join(' + ')}${m.k?' · СЕМЕЙНЫЙ':''}</p></div></div>
+ </div>
+ <div class="row"><button onclick="nextMovie()">ДРУГОЙ ФИЛЬМ</button><button onclick="markSeen()">УЖЕ ВИДЕЛИ</button></div>
+ <div class="board" style="margin-top:16px"><p class="buf-t">— БУФЕТ НА ДВОИХ —</p><div class="ctxn">${ctxWhy()}</div>
+  ${course('f','ОСНОВНОЕ',S.main,mainMeta(S.main))}
+  ${course('d','ДЕСЕРТ',S.dess,dessMeta(S.dess))}
+  ${course('r','БАР',S.drk,S.drk.a?'С ГРАДУСОМ':'БЕЗ АЛКОГОЛЯ')}
+ </div>
+ <div class="prog"><div class="tabs">${tabs.map(([k,n])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';rResult()">${n}</button>`).join('')}</div><div class="pane">${rPane()}</div></div>
+ <button class="btn main" onclick="accept()">БЕРЁМ БИЛЕТЫ</button>
+ <button class="btn ghost" onclick="share()">СКОПИРОВАТЬ ПРОГРАММУ</button></div>`;
+}
+function re(k){S.checked.clear();if(k==='f'){S.main=pickMain()}else if(k==='d'){S.dess=pickDess()}else{S.drk=pickDrink()}rResult()}
+let rewinding=false;
+function nextMovie(){
+ if(rewinding)return;
+ const n=pickMovie();if(!n){toast('Фильмы под этот запрос закончились');return}
+ const swap=()=>{S.movie=n;['f','d','r'].forEach(k=>S.shown[k].clear());newMenu();rResult()};
+ let reduce=false;try{reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+ const mq=document.querySelector('#app .marquee');
+ if(reduce||!mq){swap();window.scrollTo({top:0,behavior:'smooth'});return}
+ rewinding=true;window.scrollTo({top:0,behavior:'smooth'});
+ try{navigator.vibrate&&navigator.vibrate([8,40,8,40,8])}catch(e){}
+ mq.classList.add('rw');
+ setTimeout(()=>{swap();const m2=document.querySelector('#app .marquee');if(m2){m2.classList.add('rv');setTimeout(()=>{m2.classList.remove('rv');rewinding=false},650)}else rewinding=false},480);
+}
+function markSeen(){seen.add(S.movie.t);store.set('kv_seen',[...seen]);toast('Запомнили — больше не предложим');nextMovie()}
+function planText(){return `Сегодня в программе: ${S.movie.t} (${S.movie.y}, ${fmtTime(S.movie.r)})\nУжин: ${S.main.n}\nДесерт: ${S.dess.n}\nБар: ${S.drk.n}`}
+function accept(){hist.unshift({d:new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'}),m:S.movie.t,me:S.movie.e,f:S.main.n,fe:S.main.e,ds:S.dess.n,dr:S.drk.n,dre:S.drk.e});hist=hist.slice(0,50);seen.add(S.movie.t);store.set('kv_seen',[...seen]);store.set('kv_hist',hist);toast('Приятного просмотра и аппетита!');setTimeout(()=>go('history'),900)}
+async function share(){try{await navigator.clipboard.writeText(planText());toast('Скопировано — отправьте в чат')}catch(e){toast('Не получилось скопировать')}}
+function reset(){S.moods=[];go('home')}
+function rHistory(){
+ app.innerHTML=header()+`<div class="fade"><button class="back" onclick="go(S.movie?'result':'home')">${IC.back} НАЗАД</button>
+ <div class="marquee">${bulbs()}<p class="mq-k">ВАШИ</p><h1 class="mq-t" style="font-size:36px">ПРОШЛЫЕ СЕАНСЫ</h1></div>
+ <div style="margin-top:16px">${hist.length?hist.map(x=>`<div class="ticket"><div class="tb"><div class="tn">${x.m}</div><div class="ts">${x.f}${x.ds?' · '+x.ds:''}${x.dr?' · '+x.dr:''}</div></div><div class="tside">${x.d.toUpperCase()}</div></div>`).join(''):'<div class="ticket"><div class="tb"><div class="empty" style="color:#6b4a3a">Пока ни одного сеанса. Самое время начать.</div></div></div>'}</div>
+ ${seen.size?`<button class="btn ghost" onclick="clearSeen()">СНОВА ПРЕДЛАГАТЬ ПРОСМОТРЕННЫЕ (${seen.size})</button>`:''}
+ <button class="btn main" onclick="reset()">НОВЫЙ СЕАНС</button></div>`;
+}
+function clearSeen(){seen.clear();store.set('kv_seen',[]);toast('Готово');rHistory()}
+function go(s){S.screen=s;({home:rHome,details:rDetails,result:rResult,history:rHistory,theme:rTheme,quiz:rQuiz,quizIntro:rQuizIntro,profile:rProfile})[s]();window.scrollTo(0,0)}
+applyTheme(theme);applyProfDefaults();go(!profs.length&&!store.get('kv_quiz_skip',0)?'quizIntro':'home');setInterval(()=>{if(theme==='auto'){const r=resolvedTheme();if(document.documentElement.getAttribute('data-theme')!==r)applyTheme('auto')}},60000);
+
+/* ===== PWA ===== */
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+(function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);const sa=window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches;if(ios&&!sa&&!localStorage.getItem('kv_ihint')){const d=document.createElement('div');d.className='ihint';d.innerHTML='<b>Установите как приложение:</b> нажмите «Поделиться» внизу Safari → «На экран „Домой“». Откроется на весь экран и с иконкой.<button aria-label="Закрыть">×</button>';d.querySelector('button').onclick=()=>{d.remove();try{localStorage.setItem('kv_ihint','1')}catch(e){}};document.body.appendChild(d)}}catch(e){}})();
+</script>
+</body>
+</html>
